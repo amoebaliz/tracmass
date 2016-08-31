@@ -7,18 +7,12 @@
         gridname = 'HYCOM GLBa0.0',
       gridsource = 'http://www.hycom.org',
         griddesc = '1/12 deg run for the global Ocean.',
-       indatadir = '/projData/HYCOM/',
 /
 &INIT_CASE_DESCRIPTION
-        casename = 'amazon',
-        casedesc = 'Follow the Amazon river plume.',
+        casename = 'orcaGlobal',
+        casedesc = 'Using Orca fields for fun and entertainment.',
 /
 &INIT_GRID_SIZE
-             imt =   4500,
-             jmt =   2001,
-              km =     40,
-             nst =      2,
-         subgrid =      1,
      subgridimin =      1,
      subgridimax =   4500,
      subgridjmin =      1,
@@ -29,12 +23,6 @@
        subgridid =      1,
 /
 &INIT_BASE_TIME
-         basesec =      0,
-         basemin =      0,
-        basehour =      0,
-         baseday =      1,
-         basemon =      1,
-        baseyear =      1,
 /
 &INIT_GRID_TIME
    fieldsperfile =      1,
@@ -55,43 +43,36 @@
           intmin =     50,
 /
 &INIT_RUN_TIME
-         intspin =    270,
+         intspin =    304,
           intrun =    364,
 /
 &INIT_WRITE_TRAJS
       twritetype =      2,
            kriva =      1,
-      outdatadir =     '',
-     outdatafile =     '',
+      outdatadir = '/Users/bror/ormOut/',
+     outdatafile = 'hycom2Dim19',
  intmininoutfile =      0,
 /
 &INIT_SEEDING
-             nff =      1,
+             nff =      2,
             isec =      3,
             idir =      0,
             nqua =      1,
-       partquant =      3,
+       partquant =     60,
         ntracmax = 7000000,
     loneparticle =     -1,
         seedtype =      1,
-            !!Amazon
-            ist1 =   3775,
-            ist2 =   3937,
-            jst1 =    988,
-            jst2 =   1087,
-            !!Orinoco
-            !ist1 =    3700,
-            !ist2 =    3762,
-            !jst1 =    1100,
-            !jst2 =    1150,
-            kst1 =       1,
-            kst2 =       1,
+            ist1 =   4400,
+            ist2 =   4410,
+            jst1 =   1617,
+            jst2 =   1627,
+            kst1 =      1,
+            kst2 =      1,
             tst1 =     -1,
             tst2 =     -1,
          seeddir =     '',
         seedfile =     '',
      varseedfile =      0,
-        seedtime =      0,
          seedall =      0,
          seedpos =      1,
        seedparts =      0,
@@ -103,7 +84,7 @@
             iene = 800,800,3,800,
             jens = 0,497,0,0,
             jenn = 3,500,500,500,
-           timax = 36500.0,
+           timax = 60.0,
 /
 &INIT_TEMP_SALT
            tmin0 =  -50.0,

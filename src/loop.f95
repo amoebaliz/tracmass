@@ -28,7 +28,7 @@ SUBROUTINE loop
   USE mod_tempsalt
   ! === Selectable moules ===
   USE mod_active_particles
-  USE mod_streamfunctions
+  USE mod_streamfunctions, only: intpsi
   USE mod_tracer
   USE mod_sed
 
@@ -149,8 +149,8 @@ SUBROUTINE loop
   !==========================================================
   !=== Start main time loop                               ===
   !==========================================================
-  print *, nff, intstart+1, intstart+intrun, intrun
-  intsTimeLoop: do ints=intstart+1,intstart+intrun, nff ! LIZ added nff for negative steps:wq
+  !intsTimeLoop: do ints=intstart+1,intstart+intrun, nff ! LIZ added nff for negative steps UPDATE: bror made below change (+1 is now nff)
+  intsTimeLoop: do ints=intstart+nff, intstart+intrun, nff
      call fancyTimer('reading next datafield','start')
      tt = ints*tseas
      if (degrade_counter < 1) call readfields
@@ -164,7 +164,8 @@ SUBROUTINE loop
       call write_streamfunctions
       call writetracer
      endif
-    intspinCond: if(ints <= intstart+intspin) then
+
+     intspinCond: if(ints*nff <= (intstart+intspin)*nff) then
         call fancyTimer('seeding','start')
         call seed (tt,ts)
         call fancyTimer('seeding','stop')
@@ -182,8 +183,9 @@ SUBROUTINE loop
      !=======================================================
      
      call fancyTimer('advection','start')
-
-     ntracLoop: do ntrac=1,ntractot  
+     
+     ntracLoop: do ntrac=1,ntractot
+        !print *,ntrac, ntractot
         ! === Test if the trajectory is dead   ===
         if(nrj(6,ntrac) == 1) cycle ntracLoop
         
@@ -389,8 +391,12 @@ SUBROUTINE loop
            call errorCheck('bottomError', errCode)
        !    if (errCode.ne.0) cycle ntracLoop
            call errorCheck('airborneError', errCode)
+           if (errCode.ne.0) cycle ntracLoop
+           
            call errorCheck('corrdepthError', errCode)
+!           if (errCode.ne.0) cycle ntracLoop
            call errorCheck('cornerError', errCode)
+           if (errCode.ne.0) cycle ntracLoop
            
            ! === diffusion, which adds a random position ===
            ! === position to the new trajectory          ===
@@ -807,7 +813,7 @@ return
          '          dxyz :  ',dxyz
     print '(A,I4,A,F7.2,A,F7.2)',    &
          '    kmt: ', kmt(ib,ja), &
-#if defined zgrid3Dt || defined zgrid3D
+#if defined zgrid3D
          '    dz(k) : ', dz(kb), '   dzt :  ', dzt(ib,jb,kb,1)
 
 #else

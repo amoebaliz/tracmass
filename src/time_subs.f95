@@ -179,12 +179,10 @@ elseif(ijk==3) then
  endif
 #endif
 
-#ifdef zgrid3Dt 
-
-  dzu1=dzt(ia,ja,ka,nsm) ! layer thickness at time step n-1
-  dzu2=dzt(ia,ja,ka,nsp) ! layer thickness at time step n
-!  dzs= intrpg*dzu1 + intrpr*dzu2   ! layer thickness at time interpolated for "present" ! (wrong?? 
-  dzs= intrpr*dzu1 + intrpg*dzu2   ! layer thickness at time interpolated for "present" 
+#ifdef zgrid3D 
+  dzs= intrpg*dzt(ia,ja,ka,nsp)+intrpr*dzt(ia,ja,ka,nsm)
+  dzu1=dzt(ia,ja,ka,nsm)
+  dzu2=dzt(ia,ja,ka,nsp)
   if(abs(dzu1)<eps) stop 8705
   if(abs(dzu2)<eps) stop 8706
   f0=dzs/dzu1
@@ -216,8 +214,7 @@ elseif(ijk==3) then
   f0=1.0_dp/f0
   f1=1.0_dp/f1
  endif 
-#endif /*zgrid3Dt*/
-
+#endif /*zgrid3D*/
 
 endif
 
@@ -306,6 +303,7 @@ REAL (DP)  ::dawson1, dawson2,s15adf,s15aef,errfun
 REAL (DP)  :: f0,f1,dzs,dzu1,dzu2,s0,ss
 REAL (DP)  :: r0,r1!,ss0
 
+ss0 = dble(idint(ts))*tseas/dxyz
 
 #ifdef twodim  
 if(ijk==3) then
@@ -393,14 +391,12 @@ elseif(ijk==3) then
  endif
 #endif
 
-#ifdef zgrid3Dt 
-
-  dzu1=dzt(ia,ja,ka,nsm) ! layer thickness at time step n-1
-  dzu2=dzt(ia,ja,ka,nsp) ! layer thickness at time step n
-!  dzs= intrpg*dzu1 + intrpr*dzu2   ! layer thickness at time interpolated for "present" ! (wrong?? 
-  dzs= intrpr*dzu1 + intrpg*dzu2   ! layer thickness at time interpolated for "present" 
-  if(abs(dzu1)<eps) stop 4966
-  if(abs(dzu2)<eps) stop 4967
+#ifdef zgrid3D 
+  dzs= intrpg*dzt(ia,ja,ka,nsp)+intrpr*dzt(ia,ja,ka,nsm)
+  dzu1=dzt(ia,ja,ka,nsm)
+  dzu2=dzt(ia,ja,ka,nsp)
+  if(abs(dzu1)<=eps) stop 4966
+  if(abs(dzu2)<=eps) stop 4967
   f0=dzs/dzu1
   f1=dzs/dzu2
   uu=uu*f0
@@ -428,12 +424,10 @@ elseif(ijk==3) then
   if(abs(f1)<eps) stop 4969
   f0=1.0_dp/f0
   f1=1.0_dp/f1
- endif 
-#endif /*zgrid3Dt*/
+#endif /*zgrid3d*/
 
 
 endif
-
 
 !print *,ijk,'u+',uu,vv,' u-',um,vm
 !if(uu==vv .and. um==vm) then
@@ -515,8 +509,9 @@ endif
 !  r1=dble(KM)-0.5d0
 ! endif
 !endif
-
 !print *,'time',ijk,r1,r0
+
+
 
 return
 end subroutine pos_time

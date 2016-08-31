@@ -44,12 +44,12 @@ SUBROUTINE init_params
                                     subGridKmin, subGridKmax, SubGridFile,   &
                                     subGridID
    namelist /INIT_BASE_TIME/        baseSec, baseMin, baseHour, baseDay,     &
-                                    baseMon, baseYear
+                                    baseMon, baseYear, jdoffset
    namelist /INIT_GRID_TIME/        fieldsPerFile, ngcm, iter, intmax,       &
                                     minvelJD, maxvelJD
    namelist /INIT_START_DATE/       startSec, startMin, startHour,           & 
                                     startDay, startMon, startYear,           &
-                                    startJD, jdoffset, intmin, noleap
+                                    startJD, intmin, noleap
    namelist /INIT_RUN_TIME/         intspin, intrun
    namelist /INIT_WRITE_TRAJS/      twritetype, kriva, outDataDir, outDataFile, &
                                     outdircase, intminInOutFile, intpsi, outdirdate
@@ -76,9 +76,12 @@ SUBROUTINE init_params
    Case     = CASE_NAME
 
    IF ((IARGC() > 0) )  THEN
-      CALL getarg(1,Case)
+      CALL getarg(1,project)
    END IF
-
+   IF ((IARGC() > 1) )  THEN
+      CALL getarg(2, Case)
+   END IF
+   
    CALL getenv('TRMPROJDIR',projdir)
    if (len(trim(projdir)) == 0) then
       CALL getenv('TRMDIR',ormdir)
@@ -192,7 +195,7 @@ SUBROUTINE init_params
    start3d  = [1, subGridImin, subGridJmin, subGridKmin]
    count3d  = [1, imt,         jmt,         km         ]
    
-   if ((IARGC() > 1) )  then
+   if ((IARGC() > 2) )  then
       ARG_INT1 = 0.1
       CALL getarg(2,inparg)
       if ( ARG_INT1 == 0) then
@@ -204,7 +207,7 @@ SUBROUTINE init_params
       end if
    end if
       
-   IF ((IARGC() > 2) ) THEN
+   IF ((IARGC() > 3) ) THEN
       ARG_INT2 = 0.1
       CALL getarg(3,inparg)
       if ( ARG_INT2 == 0) then
@@ -236,7 +239,7 @@ SUBROUTINE init_params
       startFrac = (startFrac - startHour) * 60
       startMin  = int(startFrac)
    end if
-
+   
    if (nff == 1) then
       intmin = jd2ints(startJD)
    else
@@ -323,13 +326,10 @@ SUBROUTINE init_params
       dxv = 0
       dyu = 0
 
-#ifdef zgrid3Dt
+#if  zgrid3D
       ALLOCATE ( dzt(imt,jmt,km,nst) )
       dzt = 0
-#elif  zgrid3D
-      ALLOCATE ( dzt(imt,jmt,km) )
-      dzt = 0
-#endif /*zgrid3Dt*/
+#endif /*zgrid3D*/
 #ifdef varbottombox
       ALLOCATE ( dztb(imt,jmt,nst) )
 #endif /*varbottombox*/
