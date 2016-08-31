@@ -386,16 +386,26 @@ SUBROUTINE loop
            
            call errorCheck('boundError', errCode)
            if (errCode.ne.0) cycle ntracLoop
+           if (ntrac.eq.1 .AND. niter.eq.1) print *, 'MEEP1', errCode
+
            call errorCheck('landError', errCode)
            if (errCode.ne.0) cycle ntracLoop
+           if (ntrac.eq.1 .AND. niter.eq.1) print *, 'MEEP2', errCode
+
            call errorCheck('bottomError', errCode)
-       !    if (errCode.ne.0) cycle ntracLoop
-           call errorCheck('airborneError', errCode)
            if (errCode.ne.0) cycle ntracLoop
+           if (ntrac.eq.1 .AND. niter.eq.1) print *, 'MEEP3', errCode
+
+           call errorCheck('airborneError', errCode)
+           if (ntrac.eq.1 .AND. niter.eq.1) print *, 'MEEP4', errCode
+           !if (errCode.ne.0) cycle ntracLoop
            
            call errorCheck('corrdepthError', errCode)
-!           if (errCode.ne.0) cycle ntracLoop
+           if (ntrac.eq.1 .AND. niter.eq.1) print *, 'MEEP5', errCode           
+           !if (errCode.ne.0) cycle ntracLoop
+
            call errorCheck('cornerError', errCode)
+           if (ntrac.eq.1 .AND. niter.eq.1) print *, 'MEEP6', errCode
            if (errCode.ne.0) cycle ntracLoop
            
            ! === diffusion, which adds a random position ===

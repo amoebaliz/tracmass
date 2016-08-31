@@ -28,6 +28,7 @@ MODULE mod_seed
    INTEGER                                    :: nsdTim
    INTEGER                                    :: seedtstep=1   
    INTEGER                                    :: seedPos, seedTime
+   INTEGER                                    :: seedintsdelta = 1
    INTEGER                                    :: seedType
    INTEGER                                    :: seedAll, varSeedFile
    INTEGER                                    :: seedparts=0, seedpart_id
@@ -72,10 +73,12 @@ CONTAINS
             END IF
          END DO findTime
       END IF
-      
-      !What is this line for??? Seed every eight days!!!
-      if ((ints-intstart-1)/8 .ne. real((ints-intstart-1))/8) return
-      
+     
+       !What is this line for??? Seed every eight days!!
+       !! LD: USED FOR ALTERNATING DAYS - specify seedinsdelta in the .in file if you want to use it
+       if ((ints-intstart-1)/seedintsdelta .ne. &
+            real((ints-intstart-1))/seedintsdelta) return
+ 
       ! ---------------------------------------
       ! --- Loop over the seed size, nsdMax ---
       !----------------------------------------

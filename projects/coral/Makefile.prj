@@ -1,7 +1,7 @@
 # Makfile for CTROMS
 #========================================================================
-  INPUT_INT1        = intmin   # Variables set from command line
-  INPUT_INT2        = intrun     # Use 'dummy' if not used.   
+  INPUT_INT1        = dummy   # Variables set from command line
+  INPUT_INT2        = dummy     # Use 'dummy' if not used.   
 #------------------------------------------------------------------------
    fl01   = -Dtimestep      # Analytical time scheme to solve PDFs
 #  fl01   = -Dtimeanalyt    # Stationary time scheme 
@@ -28,7 +28,7 @@
 #  fl16  = -Dfreesurface    # Variable bottom box to match actual depth
 #  fl17  = -Dzvec1D         # Cell depths defined as vector
 #  fl17  = -Dzgrid3D        # Cell depths defined as 3D grid (for sigma)
-   fl18  = -Dzgrid3Dt       # Cell depths 3D and time interp. (for atm)
+   fl18  = -Dzgrid3D        # Cell depths 3D and time interp. (for atm)
 #------------------------------------------------------------------------
 #  fl18  = -Dselect         # Select only one trajectory (for debugging)
 #  fl19  = -Dtracer         # Stores a simulated tracer

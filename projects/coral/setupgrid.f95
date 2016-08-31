@@ -46,8 +46,8 @@ SUBROUTINE setupgrid
   ALLOCATE ( z_r(imt,jmt,km,nst) )   !BJ
   ALLOCATE ( z_w(imt,jmt,0:km,nst) ) !BJ
 
-  print*, 'imt=', imt
-  print*, 'jmt=', jmt
+!  print*, 'imt=', imt
+!  print*, 'jmt=', jmt
 
   !Order is   t  k  i  j 
   map2d    = [3, 4, 1, 2]

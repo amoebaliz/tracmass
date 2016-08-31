@@ -50,7 +50,7 @@ SUBROUTINE init_params
    namelist /INIT_START_DATE/       startSec, startMin, startHour,           & 
                                     startDay, startMon, startYear,           &
                                     startJD, intmin, noleap
-   namelist /INIT_RUN_TIME/         intspin, intrun
+   namelist /INIT_RUN_TIME/         intspin, intrun, seedintsdelta
    namelist /INIT_WRITE_TRAJS/      twritetype, kriva, outDataDir, outDataFile, &
                                     outdircase, intminInOutFile, intpsi, outdirdate
           
@@ -74,10 +74,10 @@ SUBROUTINE init_params
    
    Project  = PROJECT_NAME
    Case     = CASE_NAME
-
    IF ((IARGC() > 0) )  THEN
       CALL getarg(1,project)
    END IF
+
    IF ((IARGC() > 1) )  THEN
       CALL getarg(2, Case)
    END IF
@@ -171,10 +171,10 @@ SUBROUTINE init_params
       jmt = subGridJmax-subGridJmin
 
       
-	if (subGridKmax == 0) subGridKmax = km      
+      if (subGridKmax == 0) subGridKmax = km      
 #if !defined(explicit_w) && !defined(twodim)
       if ((subGridKmax-subGridKmin+1) < km) then
-      	print *, subGridKmax-subGridKmin+1, km
+         print *, subGridKmax-subGridKmin+1, km
          print *, 'ERROR!'
          print *, 'subGridKmin and subGridKmax requires -Dtwodim  or -Dexplicit_w'
          print *, 'to be selected in the project Makefile.'
@@ -194,7 +194,7 @@ SUBROUTINE init_params
    count2d  = [1, 1,           imt,         jmt        ]
    start3d  = [1, subGridImin, subGridJmin, subGridKmin]
    count3d  = [1, imt,         jmt,         km         ]
-   
+
    if ((IARGC() > 2) )  then
       ARG_INT1 = 0.1
       CALL getarg(2,inparg)
@@ -206,7 +206,7 @@ SUBROUTINE init_params
          write( inargstr1, '(A,i9.9 )' ) '_a',int(ARG_INT1)
       end if
    end if
-      
+
    IF ((IARGC() > 3) ) THEN
       ARG_INT2 = 0.1
       CALL getarg(3,inparg)

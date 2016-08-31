@@ -3,13 +3,12 @@ SUBROUTINE readfields
   USE netcdf
   USE mod_param
   USE mod_vel
-!  USE mod_coord   !FC
   USE mod_time
   USE mod_grid
   USE mod_name
   USE mod_vel
   USE mod_getfile
-  USE mod_seed, only: nff! LD ADDED, for nff    
+  USE mod_seed, only: nff    
 #ifdef tempsalt
   USE mod_dens
 #endif
@@ -80,7 +79,7 @@ SUBROUTINE readfields
        int(currJDtot) - 714777
   dataprefix  = trim(inDataDir) // dstamp
   tpos        = intpart1+1
-  print *, "curr JD:", currJDtot, "read file:", dataprefix
+!  print *, "curr JD:", currJDtot, "read file:", dataprefix
 
   uvel      = get3DfieldNC(trim(dataprefix) ,   'u')
   vvel      = get3DfieldNC(trim(dataprefix) ,   'v')
@@ -107,8 +106,6 @@ SUBROUTINE readfields
       wflux(i,j,0:km-1,2) = wvel(i,j,1:km)*dxdy(i,j)
     end do
   end do
-  !print *, 'wflux=', wflux(410,255,50,2), wflux(410,255,49,2), wflux(410,255,48,2)
-  !print *, 'wflux=', wflux(410,255,3,2), wflux(410,255,1,2), wflux(410,255,0,2)
 #endif
 
   Cs_w = get1DfieldNC (trim(dataprefix), 'Cs_w')
@@ -127,30 +124,19 @@ SUBROUTINE readfields
 
   z_w(:,:,0,2) = depth
   do k=1,km
-     dzt0 = (hc*sc_r(k) + depth*Cs_r(k)) / (hc + depth)
+     dzt0 = (hc*sc_w(k) + depth*Cs_w(k)) / (hc + depth)
      z_r(:,:,k,2) = ssh(:imt,:) + (ssh(:imt,:) + depth(:imt,:)) * dzt0(:imt,:)
      dzt0 = (hc*sc_w(k) + depth*Cs_w(k)) / (hc + depth)
-#ifdef zgrid3Dt
      z_w(:,:,k,2) = ssh(:imt,:) + (ssh(:imt,:) + depth(:imt,:)) * dzt0(:imt,:)
      dzt(:,:,k,2) = z_w(:,:,k,2)
-#else
-     dzt(:,:,k) = ssh(:imt,:) + (ssh(:imt,:) + depth(:imt,:)) * dzt0(:imt,:)
-#endif
   end do
-#ifdef zgrid3Dt
+
   dzt0 = dzt(:,:,km,2)
   dzt(:,:,1:km-1,2)=dzt(:,:,2:km,2)-dzt(:,:,1:km-1,2)
   dzt(:,:,km,2) = ssh(:imt,:) - dzt0
   dzt(:,:,:,1)=dzt(:,:,:,2)
   dzu(1:imt-1,:,:) = dzt(1:imt-1,:,:,2)*0.5 + dzt(2:imt,:,:,2)*0.5
   dzv(:,1:jmt-1,:) = dzt(:,1:jmt-1,:,2)*0.5 + dzt(:,2:jmt,:,2)*0.5
-#else
-  dzt0 = dzt(:,:,km)
-  dzt(:,:,1:km-1)=dzt(:,:,2:km)-dzt(:,:,1:km-1)
-  dzt(:,:,km) = ssh(:imt,:) - dzt0
-  dzu(1:imt-1,:,:) = dzt(1:imt-1,:,:)*0.5 + dzt(2:imt,:,:)*0.5
-  dzv(:,1:jmt-1,:) = dzt(:,1:jmt-1,:)*0.5 + dzt(:,2:jmt,:)*0.5
-#endif
 
   do k=1,km
      !uflux(:,:,k,2)   = uvel(:,:,k) * dzu(:,:,k) * dyu

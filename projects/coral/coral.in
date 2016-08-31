@@ -37,7 +37,7 @@
 &INIT_GRID_TIME
    fieldsperfile =     31,
             ngcm =     24,
-            iter =     40,
+            iter =     12,
           intmax =    730,
         minveljd =     -1,
         maxveljd =     -1,
@@ -54,7 +54,7 @@
 /
 &INIT_RUN_TIME
          intspin =      1,
-          intrun =     30,
+          intrun =      5,
 /
 &INIT_WRITE_TRAJS
       twritetype =      2,
@@ -69,7 +69,7 @@
             isec =      3,
             idir =      0,
             nqua =      1,
-       partquant =     500,
+       partquant =      1,
         ntracmax = 7000000,
     loneparticle =     -1,
         seedtype =      2,

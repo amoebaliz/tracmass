@@ -97,7 +97,8 @@ MODULE mod_grid
   ! === Vertical grids ===
   REAL*8, ALLOCATABLE, DIMENSION(:)         :: zlev
   REAL*8, ALLOCATABLE, DIMENSION(:,:,:,:)   :: z_r, z_w
-  REAL, ALLOCATABLE, DIMENSION(:,:,:,:)     :: dzt, dzu, dzv
+  REAL, ALLOCATABLE, DIMENSION(:,:,:,:)     :: dzt ! MEEP: put dzu/dzv back as 3D
+  REAL, ALLOCATABLE, DIMENSION(:,:,:)       :: dzu, dzv
   REAL, ALLOCATABLE, DIMENSION(:,:)         :: dzt0surf,dzu0surf,dzv0surf
 #ifdef varbottombox 
   REAL, ALLOCATABLE, DIMENSION(:,:,:)       :: dztb
