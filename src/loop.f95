@@ -249,7 +249,6 @@ SUBROUTINE loop
            IF (ib == 1 .AND. x1 >= DBLE (IMT)) THEN
               x1 = x1 - DBLE(IMT)
            END IF
-           
            x0  = x1
            y0  = y1
            z0  = z1
@@ -258,7 +257,6 @@ SUBROUTINE loop
            if(iam == 0) iam = IMT
            ja  = jb
            ka  = kb
-           
 
            call calc_dxyz(intrpr, intrpg)
            call errorCheck('dxyzError'     ,errCode)
@@ -373,7 +371,8 @@ SUBROUTINE loop
             x1 = x1 - DBLE(IMT)
            endif    
            if(ib > IMT      ) ib=ib-IMT 
-            
+
+           
            ! === make sure that trajectory ===
            ! === is inside ib,jb,kb box    ===
            if(x1 /= dble(idint(x1))) ib=idint(x1)+1 
@@ -382,24 +381,17 @@ SUBROUTINE loop
 
            if (ja>jmt) ja = jmt - (ja - jmt)
            if (jb>jmt) jb = jmt - (jb - jmt)
-
            
            call errorCheck('boundError', errCode)
-           if (errCode.ne.0) cycle ntracLoop
-           if (ntrac.eq.1 .AND. niter.eq.1) print *, 'MEEP1', errCode
-
+           if (errCode.ne.0) cycle ntracLoop           
            call errorCheck('landError', errCode)
-           if (errCode.ne.0) cycle ntracLoop
-           if (ntrac.eq.1 .AND. niter.eq.1) print *, 'MEEP2', errCode
-
+           if (errCode.ne.0) cycle ntracLoop           
            call errorCheck('bottomError', errCode)
            if (errCode.ne.0) cycle ntracLoop
            if (ntrac.eq.1 .AND. niter.eq.1) print *, 'MEEP3', errCode
-
            call errorCheck('airborneError', errCode)
            if (ntrac.eq.1 .AND. niter.eq.1) print *, 'MEEP4', errCode
-           !if (errCode.ne.0) cycle ntracLoop
-           
+           if (errCode.ne.0) cycle ntracLoop
            call errorCheck('corrdepthError', errCode)
            if (ntrac.eq.1 .AND. niter.eq.1) print *, 'MEEP5', errCode           
            !if (errCode.ne.0) cycle ntracLoop
@@ -408,6 +400,8 @@ SUBROUTINE loop
            if (ntrac.eq.1 .AND. niter.eq.1) print *, 'MEEP6', errCode
            if (errCode.ne.0) cycle ntracLoop
            
+
+
            ! === diffusion, which adds a random position ===
            ! === position to the new trajectory          ===
 #if defined diffusion     
@@ -435,7 +429,7 @@ SUBROUTINE loop
 
 
 
-
+        
            
            
 #if defined tempsalt
@@ -506,8 +500,8 @@ return
      
      subroutine errorCheck(teststr,errCode)
        CHARACTER (len=*),intent(in)        :: teststr    
-       INTEGER                             :: verbose = 1
-       INTEGER                             :: strict  = 1
+       INTEGER                             :: verbose = 0
+       INTEGER                             :: strict  = 0
        INTEGER,intent(out)                 :: errCode
        REAL, save                          :: dxmax = 0, dymax = 0
        INTEGER, save                       :: dxntrac, dyntrac
@@ -628,12 +622,13 @@ return
           endif
 
        case ('landError')
-          if(kmt(ib,jb) == 0) then
+          if(kmt(ia,ja) == 0) then
              if (verbose == 1) then
                 print *, thickline !========================================
                 print *,'Warning: Trajectory on land'
                 print *, thinline !-----------------------------------------
                 call print_pos
+                call print_mask
                 call print_ds
                 print *,'dxyz=',dxyz,' dxdy=',dxdy(ib,jb),dxdy(ia,ja)
                 print *,'hs=',hs(ia,ja,nsm),hs(ia,ja,nsp),hs(ib,jb,nsm),hs(ib,jb,nsp)
@@ -694,7 +689,7 @@ return
           ! if trajectory under bottom of ocean, 
           ! then put in middle of deepest layer 
           ! (this can happen when using time dependent vertical coordinates)
-           if( z1.le.dble(KM-kmt(ib,jb)) ) then
+           if( z1.le.dble(KM-kmt(ia,ja)) ) then
               print *,'Particle below bottom',z1,dble(KM-kmt(ib,jb))
               print *,'x1,y1',x1,y1
               print *,'ntrac=',ntrac,niter 
@@ -707,11 +702,17 @@ return
         case ('airborneError')
            ! if trajectory above sea level,
            ! then put back in the middle of shallowest layer (evaporation)
-           if( z1.ge.dble(KM) ) then
+           if (dble(km) > z1) then
+              print *, thickline !========================================
+              print *,'Warning: Trajectory airborne'
+              print *, thinline !-----------------------------------------
+              call print_pos
               z1=dble(KM)-0.5d0
               kb=KM
               errCode = -50
            endif
+
+           
         case ('corrdepthError')
            ! sets the right level for the corresponding trajectory depth
            if(z1.ne.dble(idint(z1))) then
@@ -841,6 +842,19 @@ return
     print '(A,F7.2,A,F7.2)','      z1 : ', z1, '      z0 : ', z0
   end subroutine print_pos
 
+
+  subroutine print_mask
+    print '(A,I4,A,I4,A,I4,A,I4,A,I4,A,I4)', &
+         'kmt(a,a) : ',    kmt(ia,ja),    '   kmt(a,b) : ', kmt(ia,jb), &
+         '   kmt(b,a) : ', kmt(ib,ja),    '   kmt(b,b) : ', kmt(ib,jb)
+    print '(A,I4,A,I4,A,I4,A,I4,A,I4,A,I4)', &
+         'msk(a,a) : ',    mask(ia,ja),    '   msk(a,b) : ', mask(ia,jb), &
+         '   msk(b,a) : ', mask(ib,ja),    '   msk(b,b) : ', mask(ib,jb)
+    
+  end subroutine print_mask
+
+
+  
   subroutine fancyTimer(timerText ,testStr)
     IMPLICIT NONE
 
