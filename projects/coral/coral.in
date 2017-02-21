@@ -58,7 +58,7 @@
 /
 &INIT_WRITE_TRAJS
       twritetype =      2,
-           kriva =      1,
+           kriva =      4,
       outdatadir = '/Volumes/P4/workdir/liz/CT_tracmass/',
      outdatafile = 'CT-test',
  intmininoutfile =      1,

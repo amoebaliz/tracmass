@@ -9,7 +9,7 @@ SUBROUTINE readfields
   USE mod_name
   USE mod_vel
   USE mod_getfile
-  
+  USE mod_seed, only: nff! LD ADDED, for nff    
 #ifdef tempsalt
   USE mod_dens
 #endif
@@ -49,6 +49,16 @@ SUBROUTINE readfields
   alloCondDZ: if(.not. allocated (dzu)) then
      allocate ( dzu(imt,jmt,km), dzv(imt,jmt,km) )
   end if alloCondDZ
+  initFieldcond: if(ints.eq.intstart) then
+     uflux  = 0.
+     vflux  = 0.
+#ifdef tempsalt
+     tem    = 0.
+     sal    = 0.
+     rho    = 0.
+#endif
+  end if initFieldcond
+
   ! ===   ===   ===   ===   ===   ===   ===   ===   ===   ===   ===
   sc_r = 0
   Cs_r = 0
@@ -149,7 +159,7 @@ SUBROUTINE readfields
      vflux(:,1:jmt,k,2)   = vvel(:imt,:,k) * dzv(:,:,k) * dxv(:imt,:)
   end do
 
-  if (intstep .le. 0) then
+  if (nff .le. 0) then
      uflux = -uflux
      vflux = -vflux
   end if

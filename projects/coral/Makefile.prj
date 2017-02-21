@@ -40,7 +40,7 @@
 #  fl23  = -Dregional       # Turns off periodic wrapping
 #  fl24  = -Dlarval_fish    # Larval fish behaviors
 #  fl25  = -Droms           # 
-#  fl26  = -Dtempsalt       #
+  fl26  = -Dtempsalt       #
 #========================================================================
 
 ORM_FLAGS= -D$(PROJECT) $(fl01)$(fl02)$(fl03)$(fl04)$(fl05)$(fl06)\

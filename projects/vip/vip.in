@@ -7,7 +7,7 @@
         gridname = 'vip',
       gridsource = 'RutgersESMGroup',
         griddesc = '0.5 km 4 yr simulation of the Verde Island Passage, Philippines',
-       indatadir = '/Volumes/P6/ROMS/VIP/VIP-LD.HCo12T/',  !'/Volumes/P4/workdir/liz/VIP_files/',
+       indatadir = '/Volumes/P6/ROMS/VIP/VIP-LD.HCo13T/',  !'/Volumes/P6/ROMS/VIP/VIP-LD.HCo12T/',
 /
 &INIT_CASE_DESCRIPTION
         casename = 'vip',
@@ -37,7 +37,7 @@
 /
 &INIT_GRID_TIME
    fieldsperfile =      2,
-            ngcm =      1,
+            ngcm =     24,
             iter =     10,
           intmax = 146000,
         minveljd =     -1,
@@ -45,7 +45,7 @@
 /
 &INIT_START_DATE
         startsec =      0,
-        startmin =     30,
+        startmin =      0,
        starthour =      0,
         startday =      1,
         startmon =      7,
@@ -55,7 +55,7 @@
 /
 &INIT_RUN_TIME
          intspin =      1,
-          intrun =     15,
+          intrun =     30,
 /
 &INIT_WRITE_TRAJS
       twritetype =      1,

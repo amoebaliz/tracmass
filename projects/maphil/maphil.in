@@ -2,8 +2,8 @@
       gridvernum =      6,
 /
 &INIT_GRID_DESCRIPTION
-         gcmname = 'GLORYS',
-       gcmsource = 'http://www.mercator-ocean.fr/eng/science/GLORYS',
+         gcmname = 'ROMS',
+       gcmsource = 'http://www.atmos.ucla.edu/cesr/ROMS_page.html',
         gridname = 'maphil',
       gridsource = 'RutgersESMGroup',
         griddesc = '0.5 km simulation Camotes Sea, Philippines',
@@ -33,6 +33,7 @@
          baseday =      1,
          basemon =      1,
         baseyear =   1990,
+        jdoffset =      0,
 /
 &INIT_GRID_TIME
    fieldsperfile =      2,
@@ -45,23 +46,22 @@
 &INIT_START_DATE
         startsec =      0,
         startmin =      0,
-       starthour =     12,
-        startday =     31,
-        startmon =     12,
-       startyear =     2013,
+       starthour =      0,
+        startday =     20,
+        startmon =     5,
+       startyear =     2010,
          startjd =     -1,
           intmin =     -1,
-        jdoffset =      0,
 /
 &INIT_RUN_TIME
          intspin =      1,
-          intrun =     9,
+          intrun =      20,
 /
 &INIT_WRITE_TRAJS
       twritetype =      1,
            kriva =      1,
       outdatadir =  '/Volumes/P4/workdir/liz/MAPHIL_tracmass/forward/',
-     outdatafile = 'test_maphil',
+     outdatafile =  'test_maphil',
  intmininoutfile =      0,
           intpsi =    120,
 /
@@ -70,14 +70,14 @@
             isec =  4,
             idir =       0,
             nqua =       1,
-       partquant = 100,
-        ntracmax = 2000000,
+       partquant =      100,
+        ntracmax =   2000000,
     loneparticle =       0,
         seedtype =       2,
-            ist1 =       0,
-            ist2 =       0,
-            jst1 =       0,
-            jst2 =       0,
+            ist1 =       20,
+            ist2 =       22,
+            jst1 =       20,
+            jst2 =       22,
             kst1 =      50,
             kst2 =      50,
             tst1 =        ,

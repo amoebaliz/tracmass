@@ -48,15 +48,14 @@ endif initFieldcond
 
 ! === EXTRACTING GCM FIELDS FOR GIVEN TIME ===
  write(dataprefix(8:15),'(i4i2.2i2.2)') currYear,currMon,currDay
- fieldFile = trim(inDataDir)//trim(dataprefix)
- uvel = get3DfieldNC(trim(fieldFile)//'U.nc', 'vozocrtx')
- vvel = get3DfieldNC(trim(fieldFile)//'V.nc', 'vomecrty')
-! print *, dataprefix
+ fieldFile = trim(inDataDir)//'GLORYS_'//trim(dataprefix(8:15))
+ uvel = get3DfieldNC(trim(fieldFile)//'_U.nc', 'vozocrtx')
+ vvel = get3DfieldNC(trim(fieldFile)//'_V.nc', 'vomecrty')
+ print *, fieldFile
 #ifdef tempsalt
  tem(:,:,:,2) = get3DfieldNC(trim(fieldFile)//'T.nc', 'votemper')
  sal(:,:,:,2) = get3DfieldNC(trim(fieldFile)//'S.nc', 'vosaline')
 #endif /*tempsalt*/
-print *, dataprefix
 
 ! Remove missing value place holders
 where (uvel > 1000)

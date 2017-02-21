@@ -43,8 +43,8 @@ SUBROUTINE setupgrid
 ! === Template for setting up grids. Move the code from readfile.f95
   !allocate ( mask(imt,jmt), depth(imt,jmt) )  !FC
   allocate ( depth(imt,jmt) )  !FC
-  ALLOCATE ( z_r(imt,jmt,km,nst) )   !BJ
-  ALLOCATE ( z_w(imt,jmt,0:km,nst) ) !BJ
+  ALLOCATE ( z_r(imt,jmt,km) )   !LD: made 3D
+  ALLOCATE ( z_w(imt,jmt,0:km) ) !LD: made 3D
 
 !  print*, 'imt=', imt
 !  print*, 'jmt=', jmt

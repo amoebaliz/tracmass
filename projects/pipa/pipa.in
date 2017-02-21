@@ -15,14 +15,14 @@
 /
 &INIT_GRID_SIZE
              imt =     232,
-             jmt =     91,
+             jmt =     111,
               km =     75,
              nst =      2,
          subgrid =      1,
      subgridimin =    344,
      subgridimax =    575,
      subgridjmin =    450,
-     subgridjmax =    540,
+     subgridjmax =    560,
      subgridfile =     '',
        subgridid =       ,
 /
@@ -45,17 +45,16 @@
 &INIT_START_DATE
         startsec =      0,
         startmin =      0,
-       starthour =     12,
-        startday =     10,
-        startmon =     1,
-       startyear =     1993,
+       starthour =      0,
+        startday =     1,
+        startmon =     5,
+       startyear =     1999,
          startjd =     -1,
           intmin =     -1,
-        jdoffset =      0,
 /
 &INIT_RUN_TIME
-         intspin =      1,
-          intrun =     100,
+         intspin =     183,
+          intrun =     183,
 /
 &INIT_WRITE_TRAJS
       twritetype =      1,
@@ -66,18 +65,18 @@
           intpsi =    120,
 /
 &INIT_SEEDING
-             nff =   1,
-            isec =  1,
-            idir =       0,
-            nqua =       1,
-       partquant = 10000,
+             nff =     1,
+            isec =     1,
+            idir =     0,
+            nqua =     1,
+       partquant = 1000,
         ntracmax = 2000000,
     loneparticle =       0,
-        seedtype =       1,
-            ist1 =  166,
-            ist2 =  166,
-            jst1 =  48,
-            jst2 =  48,
+        seedtype =       2,
+            ist1 =  158,
+            ist2 =  158,
+            jst1 =  76,
+            jst2 =  76,
             kst1 =      75,
             kst2 =      75,
             tst1 =        ,
@@ -95,9 +94,9 @@
             nend =    4,
             ienw  =   1,   1,    1,    232,
             iene  =   1,   232,  232,  232,
-            jens  =   1,   91,   91,   91,
-            jenn  =  91,   91,   1,    91,
-            timax = 1000.0
+            jens  =   1,   111,   111,   111,
+            jenn  =  111,   111,   1,    111,
+            timax =  100.0
 /
 &INIT_TEMP_SALT
            tmin0 =  -50.0,

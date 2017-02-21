@@ -9,7 +9,7 @@ import matplotlib.pylab as plt
 import pandas
 #-----------------------------
 
-ROMS_grid = 'MaPhil'
+ROMS_grid = 'CORAL'
 kk = 50
 isec = 3
 idir = 0
@@ -20,7 +20,7 @@ sfname = 'test.seed'
 # Get Mask
 GRID = pyroms.grid.get_ROMS_grid(ROMS_grid)
 mask_rho = GRID.hgrid.mask_rho
-h = GRID.vgrid.h
+
 # Create csv file
 with open(sfname, 'w') as f:
         writer = csv.writer(f, delimiter=' ', lineterminator='\n')
@@ -28,14 +28,14 @@ with open(sfname, 'w') as f:
         jarray = []
 #        n=0
         # Evaluate whether point is water and whether it touches land
-        for jj in range(2,mask_rho.shape[0]-1):
-            for ii in range(2,mask_rho.shape[1]-1):
-#        for jj in range(220,230):
-#            for ii in range(280,300):
+#        for jj in range(1,mask_rho.shape[0]-1):
+#            for ii in range(1,mask_rho.shape[1]-1):
+        for jj in range(160,232):
+            for ii in range(370,439):
                 if mask_rho[jj,ii] == 1:
                    # Coastal criteria
                    coast = mask_rho[jj-1,ii] + mask_rho[jj+1,ii] + mask_rho[jj,ii-1] + mask_rho[jj,ii+1]
-                   if  ((coast < 4)):# or (h[jj,ii]<10)) :
+                   if  coast < 4:
                        row = [str(ii+1).zfill(5)] + [str(jj+1).zfill(5)] + [str(kk).zfill(5)] + [str(isec).zfill(5)] + [str(idir).zfill(5)] + [str(itim).zfill(5)]
                        writer.writerow(row)
                        iarray = np.append(iarray, ii)

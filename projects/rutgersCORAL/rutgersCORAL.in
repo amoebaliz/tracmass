@@ -7,7 +7,8 @@
         gridname = 'CORAL',
       gridsource = 'Rutgers',
         griddesc = 'Coral Triangle 5km Grid',
-       indatadir = '/nfs/T3/ROMS/CORAL/RUN16/',
+       indatadir = '/Volumes/P2/ROMS/CORAL/RUN16/'
+/nfs/T3/ROMS/CORAL/RUN16/',
 /
 &INIT_CASE_DESCRIPTION
         casename = 'RUN16',
@@ -59,16 +60,17 @@
 &INIT_WRITE_TRAJS
       twritetype =      2,
            kriva =      1,
-      outdatadir = '/Volumes/R1/ROMS/CORAL/RUN16_TRACMASSv6/',
+      outdatadir = '/Volumes/P4/workdir/liz/CT_tracmass/',
      outdatafile = 'CT-test',
  intmininoutfile =      1,
+          intpsi =    120,
 /
 &INIT_SEEDING
              nff =      1,
             isec =      3,
             idir =      0,
             nqua =      1,
-       partquant =      3,
+       partquant =     30,
         ntracmax = 7000000,
     loneparticle =     -1,
         seedtype =      2,
@@ -80,8 +82,8 @@
             kst2 =     50,
             tst1 =      1,
             tst2 =      5,
-         seeddir = '/Users/frederic/tracmass/new_tracmass/projects/rutgersCORAL/',
-        seedfile = 'seed_file.asc',
+         seeddir = '/Users/liz/TOOLS/tracmass/projects/rutgersCORAL/',
+        seedfile = 'test.seed',
      varseedfile =      0,
         seedtime =      0,
          seedall =      0,

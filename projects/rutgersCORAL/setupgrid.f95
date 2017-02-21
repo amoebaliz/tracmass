@@ -53,7 +53,7 @@ SUBROUTINE setupgrid
   map2d    = [3, 4, 1, 2]
   map3d    = [2, 3, 4, 1]
 
-  gridfile =  "/Volumes/R1/ROMS/CORAL/Inputs/Grid/coral_grd.nc"
+  gridfile =  "/Volumes/P2/ROMS/CORAL/Inputs/Grid/coral_grd.nc"
 
   ncTpos = 1
   print *, trim(gridfile)

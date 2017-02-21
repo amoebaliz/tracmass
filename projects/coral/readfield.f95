@@ -10,7 +10,8 @@ SUBROUTINE readfields
   USE mod_getfile
   USE mod_seed, only: nff    
 #ifdef tempsalt
-  USE mod_dens
+  !USE mod_dens
+  USE mod_tempsalt
 #endif
   
   IMPLICIT none
@@ -42,7 +43,6 @@ SUBROUTINE readfields
   
   alloCondUVW: if(.not. allocated (ssh)) then
      allocate ( ssh(imt,jmt), dzt0(imt,jmt) )
-     allocate ( sc_r(km), Cs_r(km) )
      allocate ( sc_w(km), Cs_w(km) )
   end if alloCondUVW
   alloCondDZ: if(.not. allocated (dzu)) then
@@ -59,11 +59,8 @@ SUBROUTINE readfields
   end if initFieldcond
 
   ! ===   ===   ===   ===   ===   ===   ===   ===   ===   ===   ===
-  sc_r = 0
-  Cs_r = 0
   sc_w = 0
   Cs_w = 0
-
 
   call datasetswap
   call updateClock
@@ -73,13 +70,10 @@ SUBROUTINE readfields
   intpart2    = floor((ints)/24.)
   dstamp      = 'coral_avg_XXXXX.nc'
 
-  !write (dstamp(11:15),'(I5.5)') & 
-       !int(currJDtot) - 731365
   write (dstamp(11:15),'(I5.5)') & 
        int(currJDtot) - 714777
   dataprefix  = trim(inDataDir) // dstamp
   tpos        = intpart1+1
-!  print *, "curr JD:", currJDtot, "read file:", dataprefix
 
   uvel      = get3DfieldNC(trim(dataprefix) ,   'u')
   vvel      = get3DfieldNC(trim(dataprefix) ,   'v')
@@ -96,8 +90,6 @@ SUBROUTINE readfields
   where (ssh > 1000)
      ssh = 0
   end where
-  !hs(:,:,2) = ssh
-  hs(:imt,:jmt,2) = ssh(:imt,:jmt)
 
 #ifdef explicit_w
   wflux(:,:,:,2) = 0.
@@ -110,30 +102,15 @@ SUBROUTINE readfields
 
   Cs_w = get1DfieldNC (trim(dataprefix), 'Cs_w')
   sc_w = get1DfieldNC (trim(dataprefix), 's_w')
-  Cs_r = get1DfieldNC (trim(dataprefix), 'Cs_r')
-  sc_r = get1DfieldNC (trim(dataprefix), 's_rho')
   hc   = getScalarNC (trim(dataprefix), 'hc')
 
-  !do k=1,km
-  !   dzt0 = (hc*sc_r(k) + depth*Cs_r(k)) / (hc + depth)
-  !   dzt(:,:,k) = ssh + (ssh + depth) / dzt0
-  !end do
-  !dzt0 = dzt(:,:,km)
-  !dzt(:,:,1:km-1)=dzt(:,:,2:km)-dzt(:,:,1:km-1)
-  !dzt(:,:,km) = dzt0-ssh
-
-  z_w(:,:,0,2) = depth
   do k=1,km
      dzt0 = (hc*sc_w(k) + depth*Cs_w(k)) / (hc + depth)
-     z_r(:,:,k,2) = ssh(:imt,:) + (ssh(:imt,:) + depth(:imt,:)) * dzt0(:imt,:)
-     dzt0 = (hc*sc_w(k) + depth*Cs_w(k)) / (hc + depth)
-     z_w(:,:,k,2) = ssh(:imt,:) + (ssh(:imt,:) + depth(:imt,:)) * dzt0(:imt,:)
-     dzt(:,:,k,2) = z_w(:,:,k,2)
+     z_w(:,:,k) = ssh(:imt,:) + (ssh(:imt,:) + depth(:imt,:)) * dzt0(:imt,:)
   end do
 
-  dzt0 = dzt(:,:,km,2)
-  dzt(:,:,1:km-1,2)=dzt(:,:,2:km,2)-dzt(:,:,1:km-1,2)
-  dzt(:,:,km,2) = ssh(:imt,:) - dzt0
+  dzt(:,:,1:km-1,2)= z_w(:,:,2:km) - z_w(:,:,1:km-1)
+  dzt(:,:,km,2) = ssh(:imt,:) - z_w(:,:,km)
   dzt(:,:,:,1)=dzt(:,:,:,2)
   dzu(1:imt-1,:,:) = dzt(1:imt-1,:,:,2)*0.5 + dzt(2:imt,:,:,2)*0.5
   dzv(:,1:jmt-1,:) = dzt(:,1:jmt-1,:,2)*0.5 + dzt(:,2:jmt,:,2)*0.5

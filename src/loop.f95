@@ -176,7 +176,6 @@ SUBROUTINE loop
      call active_ints(ints)
      !=== Check if the output file should be switched. ===
      call writedata(99)! switch
-
      !=======================================================
      !=== Loop over all trajectories and calculate        ===
      !=== a new position for this time step.              ===
@@ -185,10 +184,8 @@ SUBROUTINE loop
      call fancyTimer('advection','start')
      
      ntracLoop: do ntrac=1,ntractot
-        !print *,ntrac, ntractot
         ! === Test if the trajectory is dead   ===
         if(nrj(6,ntrac) == 1) cycle ntracLoop
-        
         ! === Read in the position, etc at the === 
         ! === beginning of new time step       ===
         x1     =  trj(1,ntrac)
@@ -204,7 +201,6 @@ SUBROUTINE loop
         niter  =  nrj(4,ntrac)
         ts     =  dble(nrj(5,ntrac))
         tss    =  0.d0
-        
 #ifdef rerun
         lbas=nrj(8,ntrac)
         if(lbas.lt.1 .or.lbas.gt.nend) then
@@ -214,7 +210,6 @@ SUBROUTINE loop
            exit intsTimeLoop
         endif
 #endif /*rerun*/
-
         call active_ntrac(ntrac)
           ! ===  start loop for each trajectory ===
         scrivi=.true.
@@ -244,7 +239,6 @@ SUBROUTINE loop
               print *,'intrpg=',intrpg
               exit intsTimeLoop
            endif
-
            ! === Cyclic world ocean/atmosphere === 
            IF (ib == 1 .AND. x1 >= DBLE (IMT)) THEN
               x1 = x1 - DBLE(IMT)
@@ -257,13 +251,11 @@ SUBROUTINE loop
            if(iam == 0) iam = IMT
            ja  = jb
            ka  = kb
-
            call calc_dxyz(intrpr, intrpg)
            call errorCheck('dxyzError'     ,errCode)
            call errorCheck('coordBoxError' ,errCode)
            call errorCheck('infLoopError'  ,errCode)
            if (errCode.ne.0) cycle ntracLoop
-
            ! === write trajectory ===                       
 #ifdef tracer
            if(ts == dble(int(ts, 8))) then 
@@ -271,7 +263,6 @@ SUBROUTINE loop
            end if
 #endif /*tracer*/
            call writedata(11)
-           
            !==============================================! 
            ! calculate the 3 crossing times over the box  ! 
            ! choose the shortest time and calculate the   !
@@ -391,7 +382,7 @@ SUBROUTINE loop
            if (ntrac.eq.1 .AND. niter.eq.1) print *, 'MEEP3', errCode
            call errorCheck('airborneError', errCode)
            if (ntrac.eq.1 .AND. niter.eq.1) print *, 'MEEP4', errCode
-           if (errCode.ne.0) cycle ntracLoop
+           !if (errCode.ne.0) cycle ntracLoop
            call errorCheck('corrdepthError', errCode)
            if (ntrac.eq.1 .AND. niter.eq.1) print *, 'MEEP5', errCode           
            !if (errCode.ne.0) cycle ntracLoop
@@ -703,10 +694,10 @@ return
            ! if trajectory above sea level,
            ! then put back in the middle of shallowest layer (evaporation)
            if (dble(km) > z1) then
-              print *, thickline !========================================
-              print *,'Warning: Trajectory airborne'
-              print *, thinline !-----------------------------------------
-              call print_pos
+              !print *, thickline !========================================
+              !print *,'Warning: Trajectory airborne'
+              !print *, thinline !-----------------------------------------
+              !call print_pos
               z1=dble(KM)-0.5d0
               kb=KM
               errCode = -50

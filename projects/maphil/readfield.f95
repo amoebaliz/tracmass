@@ -2,8 +2,6 @@ SUBROUTINE readfields
 
   USE netcdf
   USE mod_param
-  USE mod_vel
-  
   USE mod_time
   USE mod_grid
   USE mod_name
@@ -32,7 +30,7 @@ SUBROUTINE readfields
   CHARACTER (len=50)                         :: varName
 
   ! = Variables for converting from S to Z
-  REAL,       ALLOCATABLE, DIMENSION(:)      :: sc_r,Cs_r
+  REAL*8,       ALLOCATABLE, DIMENSION(:)    :: sc_r,Cs_r
   REAL*8,       ALLOCATABLE, DIMENSION(:)    :: sc_w,Cs_w
   INTEGER                                    :: hc
 
@@ -42,7 +40,6 @@ SUBROUTINE readfields
 
   alloCondUVW: if(.not. allocated (ssh)) then
      allocate ( ssh(imt,jmt), dzt0(imt,jmt) )
-     allocate ( sc_r(km), Cs_r(km) )
      allocate ( sc_w(km), Cs_w(km) )
   end if alloCondUVW
   alloCondDZ: if(.not. allocated (dzu)) then
@@ -59,8 +56,6 @@ SUBROUTINE readfields
   end if initFieldcond
 
   ! ===   ===   ===   ===   ===   ===   ===   ===   ===   ===   ===
-  sc_r = 0
-  Cs_r = 0
   sc_w = 0
   Cs_w = 0
 
@@ -70,7 +65,6 @@ SUBROUTINE readfields
   ! === update the time counting ===
   intpart1    = mod(ints,24)
   intpart2    = floor((ints)/24.)
-
   dstamp      = 'xxxx/MaPhil-LD.HCo05T_avg_xxxx-xx-xxT12:00:00.nc'
 
   write (dstamp(1:4),'(i4.4)')   currYear
@@ -85,7 +79,7 @@ SUBROUTINE readfields
   uvel        = get3DfieldNC(trim(dataprefix) ,   'u')
   vvel        = get3DfieldNC(trim(dataprefix) ,   'v')
   ssh         = get2dfieldNC(trim(dataprefix) ,'zeta')
-  hs(:,:,2)   = ssh
+
 #ifdef explicit_w
   wvel      = get3DfieldNC(trim(dataprefix) ,'omega')
 #endif
@@ -112,36 +106,19 @@ SUBROUTINE readfields
 
   Cs_w = get1DfieldNC (trim(dataprefix), 'Cs_w')
   sc_w = get1DfieldNC (trim(dataprefix), 's_w')
-  Cs_r = get1DfieldNC (trim(dataprefix), 'Cs_r')
-  sc_r = get1DfieldNC (trim(dataprefix), 's_rho')
   hc   = getScalarNC (trim(dataprefix), 'hc')
 
-z_w(:,:,0,2) = depth
+  !z_w(:,:,0) = depth
   do k=1,km
-     dzt0 = (hc*sc_r(k) + depth*Cs_r(k)) / (hc + depth)
-     z_r(:,:,k,2) = ssh(:imt,:) + (ssh(:imt,:) + depth(:imt,:)) * dzt0(:imt,:)
      dzt0 = (hc*sc_w(k) + depth*Cs_w(k)) / (hc + depth)
-#ifdef zgrid3Dt
-     z_w(:,:,k,2) = ssh(:imt,:) + (ssh(:imt,:) + depth(:imt,:)) * dzt0(:imt,:)
-     dzt(:,:,k,2) = z_w(:,:,k,2)
-#else
-     dzt(:,:,k) = ssh(:imt,:) + (ssh(:imt,:) + depth(:imt,:)) * dzt0(:imt,:)
-#endif
+     z_w(:,:,k) = ssh(:imt,:) + (ssh(:imt,:) + depth(:imt,:)) * dzt0(:imt,:)
   end do
-#ifdef zgrid3Dt
-  dzt0 = dzt(:,:,km,2)
-  dzt(:,:,1:km-1,2)=dzt(:,:,2:km,2)-dzt(:,:,1:km-1,2)
-  dzt(:,:,km,2) = ssh(:imt,:) - dzt0
+ 
+  dzt(:,:,1:km-1,2) = z_w(:,:,2:km) - z_w(:,:,1:km-1)
+  dzt(:,:,km,2) = ssh(:imt,:) - z_w(:,:,km)
   dzt(:,:,:,1)=dzt(:,:,:,2)
   dzu(1:imt-1,:,:) = dzt(1:imt-1,:,:,2)*0.5 + dzt(2:imt,:,:,2)*0.5
   dzv(:,1:jmt-1,:) = dzt(:,1:jmt-1,:,2)*0.5 + dzt(:,2:jmt,:,2)*0.5
-#else
-  dzt0 = dzt(:,:,km)
-  dzt(:,:,1:km-1)=dzt(:,:,2:km)-dzt(:,:,1:km-1)
-  dzt(:,:,km) = ssh(:imt,:) - dzt0
-  dzu(1:imt-1,:,:) = dzt(1:imt-1,:,:)*0.5 + dzt(2:imt,:,:)*0.5
-  dzv(:,1:jmt-1,:) = dzt(:,1:jmt-1,:)*0.5 + dzt(:,2:jmt,:)*0.5
-#endif
 
   do k=1,km
      !uflux(:,:,k,2)   = uvel(:,:,k) * dzu(:,:,k) * dyu
