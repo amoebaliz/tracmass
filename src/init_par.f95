@@ -42,7 +42,7 @@ SUBROUTINE init_params
    namelist /INIT_GRID_SIZE/        imt, jmt, km, nst, subGrid, subGridImin, &
                                     subGridImax, subGridJmin, subGridJmax,   &
                                     subGridKmin, subGridKmax, SubGridFile,   &
-                                    subGridID
+                                    subGridID, nperio
    namelist /INIT_BASE_TIME/        baseSec, baseMin, baseHour, baseDay,     &
                                     baseMon, baseYear, jdoffset
    namelist /INIT_GRID_TIME/        fieldsPerFile, ngcm, iter, intmax,       &
@@ -318,7 +318,8 @@ SUBROUTINE init_params
 
       ALLOCATE ( csu (0:jmt), cst(jmt)  ) 
       ALLOCATE ( phi(0:jmt),   zlev(0:km) ) 
-      ALLOCATE ( dyt(jmt), dxv(imt+2,jmt), dyu(imt+2,jmt) ) 
+!      ALLOCATE ( dyt(jmt), dxv(imt+2,jmt), dyu(imt+2,jmt) ) # MEEP TEST
+      ALLOCATE ( dyt(jmt), dxv(imt,jmt), dyu(imt,jmt) )
       ALLOCATE ( mask(imt,jmt) )
       mask = 1
       dyt = 0
@@ -338,7 +339,8 @@ SUBROUTINE init_params
       ! --- Allocate velocity fields, temperature, salinity, density, --- 
       ! --- sea-surface height, and trajectory data                   ---
       ALLOCATE ( uflux(imt,jmt,km,nst), vflux(imt,0:jmt,km,nst) )
-      ALLOCATE ( hs(imt+1,jmt+1,nst) )
+!      ALLOCATE ( hs(imt+1,jmt+1,nst) ) LD MEEP TEST
+      ALLOCATE ( hs(imt,jmt,nst) )
 #if defined explicit_w || full_wflux
       ALLOCATE ( wflux(imt+2 ,jmt+2 ,0:km,NST) )
 #else

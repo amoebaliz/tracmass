@@ -81,7 +81,8 @@ MODULE mod_getfile
     s = start2d(map2d)
     c = count2d(map2d)
     d = c + s - 1
-    allocate ( field(c(1),c(2)), get2dfieldNC(imt+2,jmt) )
+    !allocate ( field(c(1),c(2)), get2dfieldNC(imt+2,jmt) ) LD: issue with backtrace flags MEEP TEST
+    allocate ( field(c(1),c(2)), get2dfieldNC(imt,jmt) ) 
     field=0; get2dfieldNC=0
 
     ierr=NF90_OPEN(trim(fieldFile) ,NF90_NOWRITE ,ncid)
@@ -91,7 +92,6 @@ MODULE mod_getfile
     ierr=NF90_GET_VAR(ncid ,varid , field, s,c)
     if(ierr.ne.0) call printReadError(3, fieldFile, varName)
     ierr=NF90_CLOSE(ncid)
-
     if ( all(map2d(1:2) == (/3,4/),DIM=1) .or. &
          all(map2d(2:3) == (/3,4/),DIM=1) ) then
        get2DfieldNC(1:imt,:) = field

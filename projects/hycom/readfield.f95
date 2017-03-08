@@ -54,23 +54,23 @@ SUBROUTINE readfields
   if (currjdtot > 735096) write (dstamp(11:13),'(A3)') "910"
 
   filename = trim(inDataDir)//trim(dstamp)
-  uvel = get3DfieldNC(trim(filename) ,'water_u') * 0.001 * 2
+  uvel = get3DfieldNC(trim(filename) ,'water_u') * 0.001
   where (uvel<-10) uvel=0
-  vvel = get3DfieldNC(trim(filename) ,'water_v') * 0.001 * 2 
+  vvel = get3DfieldNC(trim(filename) ,'water_v') * 0.001
   where (vvel<-10) vvel=0
   if (nff .eq. -1) then
      uvel = -uvel
      vvel = -vvel
   end if
 
-  hs(:,:,2) = 0.01*ssh
+  hs(1:imt,1:jmt,2) = 0.01*ssh
   hs(imt+1,:,2) =hs(1,:,2)
-  hs(:,jmt+1,2) =hs(:,1,2)
+  hs(:,jmt,2) =hs(:,1,2)
   
   do k=1,km
      kk=km+1-k
-     uflux(:,:,k,2) = uvel(:,:,kk) * dyu(:,:) * dz(k) !dzu(:,:,kk)
-     vflux(:,:,k,2) = vvel(:,:,kk) * dxv(:,:) * dz(k) !dzv(:,:,kk)
+     uflux(:,1:jmt,k,2) = uvel(:,:,kk) * dyu(1:imt, :) * dz(k) !dzu(:,:,kk)
+     vflux(:,1:jmt,k,2) = vvel(:,:,kk) * dxv(1:imt, :) * dz(k) !dzv(:,:,kk)
    !  rho  (:,:,k,2) = rhof(:,:,kk)
   end do
 
