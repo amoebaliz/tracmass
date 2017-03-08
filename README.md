@@ -40,3 +40,10 @@ Change log
 
 
 6.0.0 First public release
+
+Liz notes
+----------
+
+- 'MEEP's are debugging flags
+- known discrepencies between tracmass ver_6 and my code are commented with !LD notes
+
