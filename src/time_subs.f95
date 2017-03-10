@@ -399,6 +399,7 @@ elseif(ijk==3) then
   dzu2=dzt(ia,ja,ka,nsp) ! layer thickness at time step n
 !  dzs= intrpg*dzu1 + intrpr*dzu2   ! layer thickness at time interpolated for "present" ! (wrong?? 
   dzs= intrpr*dzu1 + intrpg*dzu2   ! layer thickness at time interpolated for "present" 
+  print *, dzu1, eps
   if(abs(dzu1)<eps) stop 4966
   if(abs(dzu2)<eps) stop 4967
   f0=dzs/dzu1

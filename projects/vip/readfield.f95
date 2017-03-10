@@ -79,10 +79,11 @@ SUBROUTINE readfields
   uvel        = get3DfieldNC(trim(dataprefix) ,   'u')
   vvel        = get3DfieldNC(trim(dataprefix) ,   'v')
   ssh         = get2dfieldNC(trim(dataprefix) ,'zeta')
-  hs(:,:,2)   = ssh
+
 #ifdef explicit_w
   wvel      = get3DfieldNC(trim(dataprefix) ,'omega')
 #endif
+
   where (uvel > 1000)
      uvel = 0
   end where
@@ -93,7 +94,7 @@ SUBROUTINE readfields
      ssh = 0
   end where
 
-  hs(:imt,:jmt,2) = ssh(:imt,:jmt)
+  hs(:,:,1) = ssh
 
 #ifdef explicit_w
   wflux(:,:,:,2) = 0.
@@ -107,40 +108,34 @@ SUBROUTINE readfields
   Cs_w = get1DfieldNC (trim(dataprefix), 'Cs_w')
   sc_w = get1DfieldNC (trim(dataprefix), 's_w')
   hc   = getScalarNC (trim(dataprefix), 'hc')
-!z_w(:,:,0) = depth
+
   do k=1,km
      dzt0 = (hc*sc_w(k) + depth*Cs_w(k)) / (hc + depth)
-     !dzt0(:,:,1) = (hc*sc_w(k) + depth*Cs_w(k)) / (hc + depth)
-     z_w(:,:,k) = ssh(:imt,:) + (ssh(:imt,:) + depth(:imt,:)) * dzt0(:imt,:)
-     !z_w(:,:,k,1) = ssh(:imt,:) + (ssh(:imt,:) + depth(:imt,:)) * dzt0(:imt,:,1) 
+     z_w(:,:,k) = ssh + (ssh + depth) * dzt0
  end do
 
- dzt(:,:,1:km-1,2) = z_w(:,:,2:km) - z_w(:,:,1:km-1)
- dzt(:,:,km,2) = ssh(:imt,:) - z_w(:,:,km)
- ! dzt(:,:,1:km-1,2) = z_w(:,:,2:km,1) - z_w(:,:,1:km-1,1)
- ! dzt(:,:,km,2) = ssh(:imt,:) - z_w(:,:,km,1)
-
-
+  dzt(:,:,1:km-1,2) = z_w(:,:,2:km) - z_w(:,:,1:km-1)
+  dzt(:,:,km,2) = ssh - z_w(:,:,km)
   dzt(:,:,:,1)=dzt(:,:,:,2)
+
+  ! NOTE: not filling last i and j positions of dzu and dzv, respectively... so = 0
+  !       ergo, you do NOT want to be calculating particle trajectory with:
+  !       1) uflux from points (imt,:) 
+  !       2) vflux from points (:,jmt)
+  ! SOLUTION: make kill zone for northern and eastern boundary 2 points wide in vip.in
+
   dzu(1:imt-1,:,:) = dzt(1:imt-1,:,:,2)*0.5 + dzt(2:imt,:,:,2)*0.5
   dzv(:,1:jmt-1,:) = dzt(:,1:jmt-1,:,2)*0.5 + dzt(:,2:jmt,:,2)*0.5
-!  dzu(1:imt-1,:,:,1) = dzt(1:imt-1,:,:,2)*0.5 + dzt(2:imt,:,:,2)*0.5
-!  dzv(:,1:jmt-1,:,1) = dzt(:,1:jmt-1,:,2)*0.5 + dzt(:,2:jmt,:,2)*0.5
+  
   do k=1,km
-     !uflux(:,:,k,2)   = uvel(:,:,k) * dzu(:,:,k) * dyu
-     !vflux(:,:,k,2)   = vvel(:,:,k) * dzv(:,:,k) * dxv
-     uflux(:,:,k,2)   = uvel(:imt,:,k) * dzu(:,:,k) * dyu(:imt,:)
-     vflux(:,1:jmt,k,2)   = vvel(:imt,:,k) * dzv(:,:,k) * dxv(:imt,:)
- !    uflux(:,:,k,2)   = uvel(:imt,:,k) * dzu(:,:,k,1) * dyu(:imt,:)
-  !   vflux(:,1:jmt,k,2)   = vvel(:imt,:,k) * dzv(:,:,k,1) * dxv(:imt,:)
-
+     uflux(:,:,k,2)   = uvel(:,:,k) * dzu(:,:,k) * dyu(:imt,:jmt)
+     vflux(:,:,k,2)   = vvel(:,:,k) * dzv(:,:,k) * dxv(:imt,:jmt)
   end do
 
   if (nff .le. 0) then
      uflux = -uflux
      vflux = -vflux
   end if
-
   return
 
 end subroutine readfields

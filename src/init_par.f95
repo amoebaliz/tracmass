@@ -318,16 +318,16 @@ SUBROUTINE init_params
 
       ALLOCATE ( csu (0:jmt), cst(jmt)  ) 
       ALLOCATE ( phi(0:jmt),   zlev(0:km) ) 
-!      ALLOCATE ( dyt(jmt), dxv(imt+2,jmt), dyu(imt+2,jmt) ) # MEEP TEST
-      ALLOCATE ( dyt(jmt), dxv(imt,jmt), dyu(imt,jmt) )
-      ALLOCATE ( mask(imt,jmt) )
+!      ALLOCATE ( dyt(jmt), dxv(imt+2,jmt), dyu(imt+2,jmt) ) ! LD: Removed the +2. 
+      ALLOCATE ( dyt(jmt), dxv(imt,jmt), dyu(imt,jmt) ) ! LD: This configuration omits last i-col and j-row for C-grids
+      ALLOCATE ( mask(imt,jmt) ) ! LD: This configuration omits last i-col and j-row of rho_points for C-grids
       mask = 1
       dyt = 0
       dxv = 0
       dyu = 0
 
 #if  zgrid3D
-      ALLOCATE ( dzt(imt,jmt,km,nst) )
+      ALLOCATE ( dzt(imt,jmt,km,nst) ) ! LD: This configuration omits last i-col and j-row of rho_points for C-grids
       dzt = 0
 #endif /*zgrid3D*/
 #ifdef varbottombox
@@ -338,9 +338,9 @@ SUBROUTINE init_params
     
       ! --- Allocate velocity fields, temperature, salinity, density, --- 
       ! --- sea-surface height, and trajectory data                   ---
-      ALLOCATE ( uflux(imt,jmt,km,nst), vflux(imt,0:jmt,km,nst) )
-!      ALLOCATE ( hs(imt+1,jmt+1,nst) ) LD MEEP TEST
-      ALLOCATE ( hs(imt,jmt,nst) )
+!      ALLOCATE ( uflux(imt,jmt,km,nst), vflux(imt,0:jmt,km,nst) ) ! LD: 3-8-2017: Removed vflux 0:jmt for just jmt
+       ALLOCATE ( uflux(imt,jmt,km,nst), vflux(imt,jmt,km,nst) )
+       ALLOCATE ( hs(imt,jmt,nst) ) ! LD MEEP TEST
 #if defined explicit_w || full_wflux
       ALLOCATE ( wflux(imt+2 ,jmt+2 ,0:km,NST) )
 #else
@@ -350,7 +350,7 @@ SUBROUTINE init_params
       uflux = 0.
       vflux = 0.
       wflux = 0.d0
-      ALLOCATE ( uvel(imt+2,jmt,km) ,vvel(imt+2,jmt,km) ,wvel(imt+2,jmt,km) )
+      ALLOCATE ( uvel(imt,jmt,km) ,vvel(imt,jmt,km) ,wvel(imt,jmt,km) ) !LD: Removed +2 from imt dimension
       
       ! === Init mod_traj ===
       ALLOCATE ( trj(NTRJ,ntracmax), nrj(NNRJ,ntracmax) )

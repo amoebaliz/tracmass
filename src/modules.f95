@@ -101,7 +101,7 @@ MODULE mod_grid
 
   ! === Vertical grids ===
   REAL(DP), ALLOCATABLE, DIMENSION(:)       :: zlev
-! REAL(DP), ALLOCATABLE, DIMENSION(:,:,:,:) :: z_r, z_w ! LD: put z_r, z_w as 3D
+! REAL(DP), ALLOCATABLE, DIMENSION(:,:,:,:) :: z_r, z_w ! LD: put z_r, z_w as 3D 
   REAL(DP), ALLOCATABLE, DIMENSION(:,:,:)   :: z_r, z_w 
 ! REAL, ALLOCATABLE, DIMENSION(:,:,:,:)     :: dzt, dzu, dzv ! LD: put dzu/dzv back as 3D
   REAL, ALLOCATABLE, DIMENSION(:,:,:,:)     :: dzt

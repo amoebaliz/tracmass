@@ -39,22 +39,19 @@ SUBROUTINE setupgrid
   INTEGER                                    :: i ,j ,k ,kk
   CHARACTER (len=200)                        :: gridfile
 
-
 ! === Template for setting up grids. Move the code from readfile.f95
-  allocate ( depth(imt,jmt) )
-!  ALLOCATE ( z_r(imt,jmt,km) )   !LD: made 3D
-  ALLOCATE ( z_w(imt,jmt,0:km) ) !LD: made 3D
-!ALLOCATE ( z_w(imt,jmt,0:km,2) ) !LD: made 3D
+ ALLOCATE ( depth(imt,jmt) )  !LD: omits (:, eta_rho[-1]) and (xi_rho[-1],:) 
+ ALLOCATE ( z_w(imt,jmt,km) ) !LD: made 3D; 
   !Order is   t  k  i  j 
   map2d    = [3, 4, 1, 2]
   map3d    = [2, 3, 4, 1]
  
   gridfile =  "/Volumes/P4/workdir/liz/VIP_Grid/VIP_grd_high_res_bathy_interp2.nc"
-
+  
   ncTpos = 1
   print *, trim(gridfile)
-  dxv(:,:) = 1./get2DfieldNC(trim(gridfile), 'pm')
-  dyu(:,:) = 1./get2DfieldNC(trim(gridfile), 'pn')  
+  dxv = 1./get2DfieldNC(trim(gridfile), 'pm')
+  dyu = 1./get2DfieldNC(trim(gridfile), 'pn')  
   dxdy = dyu*dxv
   depth = get2DfieldNC(trim(gridfile), 'h')
   mask = get2DfieldNC(trim(gridfile), 'mask_rho')

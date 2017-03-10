@@ -33,6 +33,7 @@
          baseday =      4,
          basemon =     12,
         baseyear =   1991,
+        jdoffset =      0,
 /
 &INIT_GRID_TIME
    fieldsperfile =      1,
@@ -51,7 +52,6 @@
        startyear =   1996,
          startjd =     -1,
           intmin =     -1,
-        jdoffset =      0,
 /
 &INIT_RUN_TIME
          intspin =      2,
@@ -76,8 +76,8 @@
         seedtype =       1,
             ist1 =     255,
             ist2 =     275,
-            jst1 =     300,
-            jst2 =     320,
+            jst1 =     100,
+            jst2 =     120,
             kst1 =      75,
             kst2 =      75,
             tst1 =        ,

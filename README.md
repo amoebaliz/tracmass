@@ -44,6 +44,6 @@ Change log
 Liz notes
 ----------
 
-- 'MEEP's are debugging flags
+- I use 'MEEP's as debugging flags
 - known discrepencies between tracmass ver_6 and my code are commented with !LD notes
 

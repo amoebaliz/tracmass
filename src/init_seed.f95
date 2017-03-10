@@ -69,7 +69,7 @@ SUBROUTINE init_seed()
 
    
    CASE (2)      ! Seed particles according to indices given in a list
-   
+      landsd = 0 ! Assuming positions are already water points... but can test 
       IF (varSeedFile == 1) THEN
          fileStamp='/seed00000000.asc'
          WRITE (fileStamp(6:13),'(i8.8)') intstart/6
@@ -194,7 +194,6 @@ SUBROUTINE init_seed()
    END SELECT
    print '(A,I7)','        Total number of cells : ', nsdMax + landsd
    print '(A,I7)','         Cells masked as land : ', landsd
-
    if (seedparts > 0) then
       if (seedpart_id > seedparts) then
          print *,"ERROR! seedpart_ID higher than number of groups"

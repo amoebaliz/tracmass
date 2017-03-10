@@ -39,7 +39,7 @@ SUBROUTINE readfields
   ! ===   ===   ===
 
   alloCondUVW: if(.not. allocated (ssh)) then
-     allocate ( ssh(imt,jmt), dzt0(imt,jmt) )
+     allocate ( ssh(imt,jmt), dzt0(imt,jmt) ) ! NOTE: omits (:, eta_rho[-1]) and (xi_rho[-1],:) 
      allocate ( sc_w(km), Cs_w(km) )
   end if alloCondUVW
   alloCondDZ: if(.not. allocated (dzu)) then
@@ -108,23 +108,27 @@ SUBROUTINE readfields
   sc_w = get1DfieldNC (trim(dataprefix), 's_w')
   hc   = getScalarNC (trim(dataprefix), 'hc')
 
-  !z_w(:,:,0) = depth
   do k=1,km
      dzt0 = (hc*sc_w(k) + depth*Cs_w(k)) / (hc + depth)
-     z_w(:,:,k) = ssh(:imt,:) + (ssh(:imt,:) + depth(:imt,:)) * dzt0(:imt,:)
+     z_w(:,:,k) = ssh + (ssh + depth) * dzt0
   end do
  
   dzt(:,:,1:km-1,2) = z_w(:,:,2:km) - z_w(:,:,1:km-1)
-  dzt(:,:,km,2) = ssh(:imt,:) - z_w(:,:,km)
+  dzt(:,:,km,2) = ssh - z_w(:,:,km)
   dzt(:,:,:,1)=dzt(:,:,:,2)
+
+ ! NOTE: not filling last i and j positions of dzu and dzv, respectively... so = 0
+  !       ergo, you do NOT want to be calculating particle trajectory with:
+  !       1) uflux from points (imt,:) 
+  !       2) vflux from points (:,jmt)
+  ! SOLUTION: make kill zone for northern and eastern boundary 2 points wide in maphil.in
+
   dzu(1:imt-1,:,:) = dzt(1:imt-1,:,:,2)*0.5 + dzt(2:imt,:,:,2)*0.5
   dzv(:,1:jmt-1,:) = dzt(:,1:jmt-1,:,2)*0.5 + dzt(:,2:jmt,:,2)*0.5
 
   do k=1,km
-     !uflux(:,:,k,2)   = uvel(:,:,k) * dzu(:,:,k) * dyu
-     !vflux(:,:,k,2)   = vvel(:,:,k) * dzv(:,:,k) * dxv
-     uflux(:,:,k,2)   = uvel(:imt,:,k) * dzu(:,:,k) * dyu(:imt,:)
-     vflux(:,1:jmt,k,2)   = vvel(:imt,:,k) * dzv(:,:,k) * dxv(:imt,:)
+     uflux(:,:,k,2)   = uvel(:,:,k) * dzu(:,:,k) * dyu(:imt,:jmt)
+     vflux(:,:,k,2)   = vvel(:,:,k) * dzv(:,:,k) * dxv(:imt,:jmt)
   end do
 
   if (nff .le. 0) then

@@ -2,7 +2,6 @@ SUBROUTINE readfields
 
   USE netcdf
   USE mod_param
-  USE mod_vel
   USE mod_time
   USE mod_grid
   USE mod_name
@@ -10,8 +9,7 @@ SUBROUTINE readfields
   USE mod_getfile
   USE mod_seed, only: nff    
 #ifdef tempsalt
-  !USE mod_dens
-  USE mod_tempsalt
+  USE mod_dens
 #endif
   
   IMPLICIT none
@@ -32,15 +30,13 @@ SUBROUTINE readfields
   CHARACTER (len=50)                         :: varName
 
   ! = Variables for converting from S to Z
-  REAL*8,       ALLOCATABLE, DIMENSION(:)    :: sc_r,Cs_r
-  REAL*8,       ALLOCATABLE, DIMENSION(:)    :: sc_w,Cs_w
+  REAL*8,       ALLOCATABLE, DIMENSION(:)    :: sc_w,Cs_w 
   INTEGER                                    :: hc
 
   ! = Input fields from GCM
   REAL*8,       ALLOCATABLE, DIMENSION(:,:)    :: ssh,dzt0
   ! ===   ===   ===
 
-  
   alloCondUVW: if(.not. allocated (ssh)) then
      allocate ( ssh(imt,jmt), dzt0(imt,jmt) )
      allocate ( sc_w(km), Cs_w(km) )
@@ -61,26 +57,28 @@ SUBROUTINE readfields
   ! ===   ===   ===   ===   ===   ===   ===   ===   ===   ===   ===
   sc_w = 0
   Cs_w = 0
-
   call datasetswap
   call updateClock
-
   ! === update the time counting ===
   intpart1    = mod(ints,24)
   intpart2    = floor((ints)/24.)
+  
   dstamp      = 'coral_avg_XXXXX.nc'
 
   write (dstamp(11:15),'(I5.5)') & 
        int(currJDtot) - 714777
   dataprefix  = trim(inDataDir) // dstamp
-  tpos        = intpart1+1
+!  tpos        = intpart1+1
 
   uvel      = get3DfieldNC(trim(dataprefix) ,   'u')
   vvel      = get3DfieldNC(trim(dataprefix) ,   'v')
   ssh       = get2DfieldNC(trim(dataprefix) ,'zeta')
+  hs(:,:,2)   = ssh
+
 #ifdef explicit_w
   wvel      = get3DfieldNC(trim(dataprefix) ,'omega')
 #endif
+
   where (uvel > 1000)
      uvel = 0
   end where
@@ -90,6 +88,8 @@ SUBROUTINE readfields
   where (ssh > 1000)
      ssh = 0
   end where
+
+  hs(:imt,:jmt,2) = ssh(:imt,:jmt)
 
 #ifdef explicit_w
   wflux(:,:,:,2) = 0.
@@ -112,6 +112,13 @@ SUBROUTINE readfields
   dzt(:,:,1:km-1,2)= z_w(:,:,2:km) - z_w(:,:,1:km-1)
   dzt(:,:,km,2) = ssh(:imt,:) - z_w(:,:,km)
   dzt(:,:,:,1)=dzt(:,:,:,2)
+
+  ! NOTE: not filling last i and j positions of dzu and dzv, respectively... so = 0
+  !       ergo, you do NOT want to be calculating particle trajectory with:
+  !       1) uflux from points (imt,:) 
+  !       2) vflux from points (:,jmt)
+  ! SOLUTION: make kill zone for northern and eastern boundary 2 points wide in coral.in
+
   dzu(1:imt-1,:,:) = dzt(1:imt-1,:,:,2)*0.5 + dzt(2:imt,:,:,2)*0.5
   dzv(:,1:jmt-1,:) = dzt(:,1:jmt-1,:,2)*0.5 + dzt(:,2:jmt,:,2)*0.5
 
@@ -127,17 +134,17 @@ SUBROUTINE readfields
      vflux = -vflux
   end if
 
-#ifdef tempsalt
-  tem(:,:,:,2)      = get3DfieldNC(trim(dataprefix) ,   'temp')
-  sal(:,:,:,2)      = get3DfieldNC(trim(dataprefix) ,   'salt')
+!#ifdef tempsalt
+!  tem(:,:,:,2)      = get3DfieldNC(trim(dataprefix) ,   'temp')
+!  sal(:,:,:,2)      = get3DfieldNC(trim(dataprefix) ,   'salt')
   !rho(:,:,:,2)      = get3DfieldNC(trim(dataprefix) ,   'rho')
-#ifdef larval_fish
-  srflux(:,:,2)     = get2DfieldNC(trim(dataprefix) ,   'swrad')
+!#ifdef larval_fish
+!  srflux(:,:,2)     = get2DfieldNC(trim(dataprefix) ,   'swrad')
 ! Note: this works as long as surface AKt is zero.
-  ak2(:,:,:)        = get3DfieldNC(trim(dataprefix) ,   'AKt')
-  akt(:,:,0:km-1,2) = ak2(:,:,:)
-#endif
-#endif
+!  ak2(:,:,:)        = get3DfieldNC(trim(dataprefix) ,   'AKt')
+!  akt(:,:,0:km-1,2) = ak2(:,:,:)
+!#endif
+!#endif
 
   return
 

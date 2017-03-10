@@ -1,6 +1,6 @@
 PROJECT	          = arctic
 CASE              = arctic
-RUNFILE 	  = runtrm
+RUNFILE 	  = runtrm_$(PROJECT)
 
 #F95COMPILER        = "g95"
 F95COMPILER        = "gfortran"

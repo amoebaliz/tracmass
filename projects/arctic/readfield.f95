@@ -96,5 +96,6 @@ do k=1,KM
      enddo
   enddo
 enddo
+
 return
 end subroutine readfields

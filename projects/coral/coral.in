@@ -19,12 +19,12 @@
               km =     50,
              nst =      2,
          subgrid =      0,
-     subgridimin =      2,
-     subgridimax =   1281,
-     subgridjmin =      2,
-     subgridjmax =    641,
-     subgridfile = '/Users/bror/svn/orm/grd/templ.asc',
-       subgridid =      1,
+     subgridimin =       ,
+     subgridimax =       ,
+     subgridjmin =       ,
+     subgridjmax =       ,
+     subgridfile =     '',
+       subgridid =       ,
 /
 &INIT_BASE_TIME
          basesec =      0,
@@ -35,10 +35,10 @@
         baseyear =      1,
 /
 &INIT_GRID_TIME
-   fieldsperfile =     31,
+   fieldsperfile =      2,
             ngcm =     24,
-            iter =     12,
-          intmax =    730,
+            iter =     10,
+          intmax = 146000,
         minveljd =     -1,
         maxveljd =     -1,
 /
@@ -50,26 +50,26 @@
         startmon =      3,
        startyear =   2003,
          startjd =     -1,
-          intmin =  65800,
+          intmin =     -1,
 /
 &INIT_RUN_TIME
          intspin =      1,
           intrun =      5,
 /
 &INIT_WRITE_TRAJS
-      twritetype =      2,
-           kriva =      4,
+      twritetype =      1,
+           kriva =      1,
       outdatadir = '/Volumes/P4/workdir/liz/CT_tracmass/',
      outdatafile = 'CT-test',
- intmininoutfile =      1,
+ intmininoutfile =      0,
           intpsi =    120,
 /
 &INIT_SEEDING
              nff =      1,
-            isec =      3,
+            isec =      4,
             idir =      0,
             nqua =      1,
-       partquant =      1,
+       partquant =     10,
         ntracmax = 7000000,
     loneparticle =     -1,
         seedtype =      2,
@@ -79,8 +79,8 @@
             jst2 =    380,
             kst1 =     50,
             kst2 =     50,
-            tst1 =      1,
-            tst2 =      5,
+            tst1 =       ,
+            tst2 =       ,
          seeddir = '/Users/liz/TOOLS/tracmass/projects/coral/',
         seedfile = 'test.seed',
      varseedfile =      0,
@@ -91,11 +91,11 @@
      seedpart_id =      0,
 /
 &INIT_KILLZONES
-            nend =      6,
-            ienw = 1,1,1,1280,
-            iene = 2,1281,1281,1281,
-            jens = 1,640,1,1,
-            jenn = 641,641,2,641,
+            nend =      4,
+            ienw =   1,    1,    1, 1280,
+            iene =   1, 1281, 1281, 1281,
+            jens =   1,  640,    1,    1,
+            jenn = 641,  641,    1,  641,
            timax = 36500.0,
 /
 &INIT_TEMP_SALT

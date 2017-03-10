@@ -42,12 +42,8 @@ SUBROUTINE setupgrid
 
 ! === Template for setting up grids. Move the code from readfile.f95
   !allocate ( mask(imt,jmt), depth(imt,jmt) )  !FC
-  allocate ( depth(imt,jmt) )  !FC
-  ALLOCATE ( z_r(imt,jmt,km) )   !LD: made 3D
-  ALLOCATE ( z_w(imt,jmt,0:km) ) !LD: made 3D
-
-!  print*, 'imt=', imt
-!  print*, 'jmt=', jmt
+  ALLOCATE ( depth(imt,jmt) )  ! NOTE: omits (:, eta_rho[-1]) and (xi_rho[-1],:) 
+  ALLOCATE ( z_w(imt,jmt,km) ) !LD: made 3D
 
   !Order is   t  k  i  j 
   map2d    = [3, 4, 1, 2]
@@ -59,10 +55,7 @@ SUBROUTINE setupgrid
   print *, trim(gridfile)
   dxv(:,:) = 1./get2DfieldNC(trim(gridfile), 'pm')
   dyu(:,:) = 1./get2DfieldNC(trim(gridfile), 'pn')
-
   dxdy = dyu*dxv
-
-  
   depth = get2DfieldNC(trim(gridfile), 'h')
   mask = get2DfieldNC(trim(gridfile), 'mask_rho')
   kmt = 50 

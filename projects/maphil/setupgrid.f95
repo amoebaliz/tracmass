@@ -41,10 +41,8 @@ SUBROUTINE setupgrid
 
 
 ! === Template for setting up grids. Move the code from readfile.f95
-  allocate ( depth(imt,jmt) )
-  ALLOCATE ( z_r(imt,jmt,km) )   !LD: made 3D
-  ALLOCATE ( z_w(imt,jmt,0:km) ) !LD: made 3D
-
+  ALLOCATE ( depth(imt,jmt) )  ! NOTE: omits (:, eta_rho[-1]) and (xi_rho[-1],:)  
+  ALLOCATE ( z_w(imt,jmt,km) ) !LD: made 3D
 
   !Order is   t  k  i  j 
   map2d    = [3, 4, 1, 2]

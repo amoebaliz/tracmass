@@ -1,4 +1,5 @@
 SUBROUTINE loop
+!!---------------------------------------------------------------------------  
 !!
 !!       SUBROUTINE loop:
 !!
@@ -52,6 +53,7 @@ SUBROUTINE loop
   !==========================================================
   !===   Read in end positions from a previous run        === 
   !==========================================================
+
 #ifdef rerun
  I=0 ; j=0 ; k=0 ; l=0
  !print *,'rerun with initial points from ', & 
@@ -115,6 +117,7 @@ SUBROUTINE loop
 566 format(i8,i7,2f8.2,f6.2,2f10.2 &
          ,f12.0,f6.1,f6.2,f6.2,f6.0,8e8.1 )
 #endif
+
   goto 40
 41 continue
 #ifdef ifs
@@ -138,6 +141,7 @@ SUBROUTINE loop
   !==========================================================
   !=== read ocean/atmosphere GCM data files               ===
   !==========================================================
+
   call fancyTimer('initialize dataset','start')
   ff=dble(nff)
   ints = intstart
@@ -146,10 +150,10 @@ SUBROUTINE loop
   call active_init
   ntrac = 0
   call fancyTimer('initialize dataset','stop')
+
   !==========================================================
   !=== Start main time loop                               ===
   !==========================================================
-  !intsTimeLoop: do ints=intstart+1,intstart+intrun, nff ! LIZ added nff for negative steps UPDATE: bror made below change (+1 is now nff)
   intsTimeLoop: do ints=intstart+nff, intstart+intrun, nff
      call fancyTimer('reading next datafield','start')
      tt = ints*tseas
@@ -157,6 +161,7 @@ SUBROUTINE loop
      degrade_counter = degrade_counter + 1
      if (degrade_counter > degrade_time) degrade_counter = 0
      call fancyTimer('reading next datafield','stop')
+
      !=======================================================
      !=== write stream functions and "particle tracer"    ===
      !=======================================================
@@ -186,6 +191,7 @@ SUBROUTINE loop
      ntracLoop: do ntrac=1,ntractot
         ! === Test if the trajectory is dead   ===
         if(nrj(6,ntrac) == 1) cycle ntracLoop
+
         ! === Read in the position, etc at the === 
         ! === beginning of new time step       ===
         x1     =  trj(1,ntrac)
@@ -201,6 +207,7 @@ SUBROUTINE loop
         niter  =  nrj(4,ntrac)
         ts     =  dble(nrj(5,ntrac))
         tss    =  0.d0
+
 #ifdef rerun
         lbas=nrj(8,ntrac)
         if(lbas.lt.1 .or.lbas.gt.nend) then
@@ -244,6 +251,7 @@ SUBROUTINE loop
               print *,'intrpg=',intrpg
               exit intsTimeLoop
            endif
+
            if (nperio /= 0) then
               ! === Cyclic world ocean/atmosphere === 
               IF (ib == 1 .AND. x1 >= DBLE (IMT)) THEN
@@ -272,6 +280,7 @@ SUBROUTINE loop
            end if
 #endif /*tracer*/
            call writedata(11)
+
            !==============================================! 
            ! calculate the 3 crossing times over the box  ! 
            ! choose the shortest time and calculate the   !
@@ -597,7 +606,7 @@ return
 
        case ('boundError')
           if(ia<1 .or. ia>imt .or. ib<1 .or. ib>imt .or.    &
-             ja<1 .or. ja>jmt .or. jb<1 .or. jb>jmt) then
+             ja<1 .or. ja>jmt .or. jb<1 .or. jb>jmt) then !LIZ HAD UNCOMMENTED THIS LINE AND COMMENTDED BELOW LINES
              !ja<1 .or. ja>jmt .or. jb<1 .or. jb>jmt .or.    & !! LD: Removed y0 and y1 evaluation; caused "exiting domain error" before checking against kill zones
              !y0<1 .or. y0>jmt .or. y1<1 .or. y1>jmt         &
              !) then
@@ -703,15 +712,7 @@ return
         case ('airborneError')
            ! if trajectory above sea level,
            ! then put back in the middle of shallowest layer (evaporation)
-!<<<<<<< HEAD
-!           if (dble(km) > z1) then
-              !print *, thickline !========================================
-              !print *,'Warning: Trajectory airborne'
-              !print *, thinline !-----------------------------------------
-              !call print_pos
-!=======
-           if( z1.ge.dble(KM) ) then
-!>>>>>>> upstream/ver_6
+           if( z1.ge.dble(KM) ) then 
               z1=dble(KM)-0.5d0
               kb=KM
               errCode = -50

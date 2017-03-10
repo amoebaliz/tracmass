@@ -53,8 +53,8 @@
           intmin =     -1,
 /
 &INIT_RUN_TIME
-         intspin =     183,
-          intrun =     183,
+         intspin =      1,
+          intrun =     10,
 /
 &INIT_WRITE_TRAJS
       twritetype =      1,

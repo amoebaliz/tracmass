@@ -40,6 +40,7 @@ SUBROUTINE setupgrid
   REAL,   ALLOCATABLE, DIMENSION(:,:,:)       :: dzt0
   CHARACTER (len=200)                         :: gridFile
 
+ ! LD: ADDING +1 to all 2D fields - hopefully not issue
   ALLOCATE ( e1t(IMT,JMT) , e2t(IMT,JMT) , e3t_ps(IMT,JMT) )
   ALLOCATE ( dzt0(IMT,JMT,KM), dzu(imt,jmt,km), dzv(imt,jmt,km)) 
   ALLOCATE ( kmu(IMT,JMT) , kmv(IMT,JMT) )
