@@ -61,7 +61,7 @@ endif initFieldcond
  fieldFile = trim(inDataDir)//trim(dataprefix)
  uvel = get3DfieldNC(trim(fieldFile)//'U.nc', 'vozocrtx')
  vvel = get3DfieldNC(trim(fieldFile)//'V.nc', 'vomecrty')
-
+ print *, fieldFile
 #ifdef tempsalt
  tem(:,:,:,2) = get3DfieldNC(trim(fieldFile)//'T.nc', 'votemper')
  sal(:,:,:,2) = get3DfieldNC(trim(fieldFile)//'S.nc', 'vosaline')

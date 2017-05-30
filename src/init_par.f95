@@ -267,7 +267,7 @@ SUBROUTINE init_params
    else
       intmax = jd2ints(real(ceiling(endJD),8))
    end if
-   
+
    if (maxvelJD > 0) then
       minvelints = jd2ints(minvelJD)
       maxvelints = jd2ints(maxvelJD)

@@ -265,16 +265,20 @@ CONTAINS
     CurrMin  = int(currFrac,8)
     currSec  = int((currFrac - dble(currMin)) * 60,8)
 
+!! LD: Modified below section because didn't printout sensible date values 
     if (ints > (maxvelints-1)) then
-       if (minvelints == 0) then
+        if (minvelints == 0) then
           loopints = ints - intmax * int(real(ints-intstart)/intmax)
        else
           loopints = ints - intmax * int(real(ints-minvelints)/intmax)
-          intmax = maxvelints - minvelints
+          !intmax = maxvelints - minvelints  
+          !Above line does something weird with the printout dates when running in reverse time; 
+          !Regardless, it doesn't seem to impact functionality of particle tracking calculations
        end if
     else
        loopints = ints
     end if
+
     !loopJD = (loopints + ttpart)*(dble(ngcm)/24) !+ 1 TEST IF NEEDED
     ! LD: removed +1 so consistent with interpolation bounds; added startMin and startSec
     loopJD = (loopints + ttpart)*(dble(ngcm)/24) + startHour/(24.) + startMin/(60*24.) + startSec/(60*60*24.)
@@ -290,11 +294,10 @@ CONTAINS
   subroutine gdate (rjd, year,month,day)
     !Computes the gregorian calendar date given a julian date (jd).
     !Source: http://aa.usno.navy.mil/faq/docs/JD_Formula.php            
-    REAL(DP)                                   :: rjd
+    REAL(DP)                                 :: rjd
     INTEGER                                  :: jd
     INTEGER                                  :: year ,month ,day
     INTEGER                                  :: i ,j ,k ,l ,n
-    
     jd = int(rjd)
     l= jd+68569
     n= 4*l/146097
@@ -306,7 +309,6 @@ CONTAINS
     l= j/11
     j= j+2-12*l
     i= 100*(n-49)+i+l
-    
     year= i
     month= j
     day= k

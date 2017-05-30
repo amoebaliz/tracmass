@@ -65,7 +65,7 @@ SUBROUTINE readfields
   ! === update the time counting ===
   intpart1    = mod(ints,24)
   intpart2    = floor((ints)/24.)
-  dstamp      = 'xxxx/MaPhil-LD.HCo05T_avg_xxxx-xx-xxT12:00:00.nc'
+  dstamp      = 'xxxx/MaPhil-LD.HCo07T_avg_xxxx-xx-xxT13:00:00.nc'
 
   write (dstamp(1:4),'(i4.4)')   currYear
   write (dstamp(27:30),'(i4i2)') currYear
