@@ -49,6 +49,7 @@ MODULE mod_traj
   ! === Particle arrays ===
   REAL(DP), ALLOCATABLE,  DIMENSION(:,:)    :: trj
   INTEGER, ALLOCATABLE, DIMENSION(:,:)      :: nrj 
+  REAL(DP), ALLOCATABLE,  DIMENSION(:,:)    :: endrj !!LD:ADDED TO STORE ENDPOINTS
   ! === Particle counters ===
   INTEGER                                   :: nout=0, nloop=0, nerror=0, nrh0=0
   INTEGER, ALLOCATABLE,DIMENSION(:)         :: nexit
@@ -206,7 +207,8 @@ MODULE mod_time
   REAL(DP)                                  :: minvelJD=0,   maxvelJD=0
   INTEGER                                   :: minvelints, maxvelints
   ! === JD when the run starts
-  REAL(DP)                                  :: startJD=-999, ttpart, startFrac
+  !REAL(DP)                                  :: startJD=-999, ttpart, startFrac !!LD: setting ttpart=0 because reaking havoc with time stampe
+  REAL(DP)                                  :: startJD=-999, ttpart=0, startFrac
   INTEGER                                   :: startYear, startMon, startDay
   INTEGER                                   :: startHour, startMin, startSec
   REAL(DP)                                  :: endJD=-999, endFrac
@@ -243,12 +245,15 @@ CONTAINS
     USE mod_param, only: ngcm
     IMPLICIT NONE
     ttpart = anint((anint(tt,8)/tseas-floor(anint(tt,8)/tseas))*tseas)/tseas 
-
-    !currJDtot = (ints+ttpart)*(dble(ngcm)/24.) !! LD: included startMin and startSec; irrelevant if both are 0; there may be a better way to do this...
+    !currJDtot = (ints+ttpart)*(dble(ngcm)/24.) !! LD: included startMin and startSec; irrelevant if both are 0
     currJDtot = (ints+ttpart)*(dble(ngcm)/24.) + startMin/(60*24.) + startSec/(60*60*24.)
- 
-    call  gdate (baseJD+currJDtot-1+jdoffset + leapoffset,  &
+
+    !call  gdate (baseJD+currJDtot-1+jdoffset + leapoffset,  &    !! LD (Jun-1): removed -1 from gdate
+    !             currYear , currMon ,currDay)
+
+    call  gdate (baseJD+currJDtot+jdoffset + leapoffset,  &
                  currYear , currMon ,currDay)
+
     currJDyr = baseJD + currJDtot - jdate(currYear ,1 ,1) + jdoffset
     
     if ((mod(currYear, 4) == 0)  .and. (currJDyr>56) .and.     &
@@ -279,9 +284,9 @@ CONTAINS
        loopints = ints
     end if
 
-    !loopJD = (loopints + ttpart)*(dble(ngcm)/24) !+ 1 TEST IF NEEDED
-    ! LD: removed +1 so consistent with interpolation bounds; added startMin and startSec
-    loopJD = (loopints + ttpart)*(dble(ngcm)/24) + startHour/(24.) + startMin/(60*24.) + startSec/(60*60*24.)
+    !loopJD = (loopints + ttpart)*(dble(ngcm)/24) + 1 ! LD: added startMin and startSec
+    loopJD = (loopints + ttpart)*(dble(ngcm)/24) + 1 + startHour/(24.) + startMin/(60*24.) + startSec/(60*60*24.)
+
     call  gdate (baseJD+loopJD-1+jdoffset ,loopYear, loopMon, loopDay)
     loopJDyr = baseJD+loopJD - jdate(loopYear ,1 ,1)
     loopFrac = (loopJD - dble(int(loopJD,8))) * 24

@@ -7,7 +7,7 @@
         gridname = 'maphil',
       gridsource = 'RutgersESMGroup',
         griddesc = '0.5 km simulation Camotes Sea, Philippines',
-       indatadir = '/Volumes/P6/ROMS/MaPhil/MaPhil-LD.HCo05T/',
+       indatadir = '/Volumes/P2/ROMS/MaPhil/MaPhil-LD.HCo07T/',
 /
 &INIT_CASE_DESCRIPTION
         casename = 'maphil',
@@ -46,7 +46,7 @@
 &INIT_START_DATE
         startsec =      0,
         startmin =      0,
-       starthour =      0,
+       starthour =     13,
         startday =     20,
         startmon =     5,
        startyear =     2010,
@@ -55,7 +55,7 @@
 /
 &INIT_RUN_TIME
          intspin =      1,
-          intrun =      20,
+          intrun =      5,
 /
 &INIT_WRITE_TRAJS
       twritetype =      1,

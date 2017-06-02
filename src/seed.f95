@@ -78,7 +78,6 @@ CONTAINS
        !! LD: USED FOR ALTERNATING DAYS - specify seedinsdelta in the .in file if you want to use it
        if ((ints-intstart-1)/seedintsdelta .ne. &
             real((ints-intstart-1))/seedintsdelta) return
- 
       ! ---------------------------------------
       ! --- Loop over the seed size, nsdMax ---
       !----------------------------------------
@@ -97,7 +96,6 @@ CONTAINS
          IF (seedTime == 2 .AND. seedAll == 2) THEN
             itim  = seed_tim (jsd)
          END IF
-         
 #if defined baltix || defined rco
          ! -------------------------------------------------
          ! --- Test if it is time to launch the particle ---
@@ -138,17 +136,16 @@ CONTAINS
 #else 
                vol=wflux(kb,nsm)
 #endif
-         
             CASE (4 ,5)   ! Total volume/mass of a grid box
                IF (KM+1-kmt(iist,ijst) > kb) THEN
                   CYCLE startLoop
                ELSE
                   vol = abs(uflux (ib, jb, kb,nsm)) + abs(uflux (ibm, jb  , kb,nsm)) + & 
                   &     abs(vflux (ib, jb, kb,nsm)) + abs(vflux (ib , jb-1, kb,nsm))
-                  if(vol/=0.) vol = 1.  
+                  if(vol/=0.) vol = 1. 
                ENDIF
-               IF (vol == 0.d0) cycle startLoop
-         
+               IF (vol == 0.d0) cycle startLoop 
+          
             END SELECT
          ! If the particle is forced to move in positive/negative direction
          IF ( (idir*ff*vol <= 0.d0 .AND. idir /= 0 ) .OR. (vol == 0.) ) THEN

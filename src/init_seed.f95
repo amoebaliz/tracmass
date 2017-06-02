@@ -35,7 +35,7 @@ SUBROUTINE init_seed()
    LOGICAL                                    :: fileexists
 
    !-------------------------------------------------------------------------
-   print *, ' '
+   !print *, ' ' !!LD: eliminated extra header space
    SELECT CASE (seedType)
      
    CASE (1)      ! Seed particles within a given interval

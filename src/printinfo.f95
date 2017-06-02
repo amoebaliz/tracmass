@@ -142,7 +142,7 @@ CONTAINS
     write(6,FMT='(A,I4,A,I2.2,A,I2.2,A,I2.2,A,I2.2)')          &
          ' Start date in model-time     : ' , startYear, '-',  & 
          startMon, '-', startDay,' ' ,startHour, ':', startMin
-  write(6,FMT='(A,I4,A,I2.2,A,I2.2,A,I2.2,A,I2.2)')          &
+    write(6,FMT='(A,I4,A,I2.2,A,I2.2,A,I2.2,A,I2.2)')          &
          ' End date in model-time       : ' , endYear, '-',  & 
          endMon, '-', endDay,' ' ,endHour, ':', endMin
     write(6,FMT='(A,I5)') ' Length of run in timesteps   : ' ,intrun
@@ -231,8 +231,10 @@ CONTAINS
     print *,nsed     ,' trajectories sedimented'
     print *,nsusp    ,' trajectories resuspended'
     call writedata(19) !end
-    
+#else                    
+
 #endif
+
 #ifdef tempsalt     
     print *,nrh0,' particles outside density range'
 #endif
@@ -240,11 +242,11 @@ CONTAINS
     print *,nerror,' particles flagged with errors'
     print *,ntractot-nout-nrh0-nerror,' particles in domain'
     print *, thinline !--------------------------------------------------- 
+   
 
 #ifdef stremfunction     
     call writepsi
 #endif    
-
     call date_and_time(currDate, currTime)
     print *,'End date  : '//currDate(1:4)//'-'//currDate(5:6)//'-'//currDate(7:8)
     print *,'End time  : '//currTime(1:2)// ':'//currTime(3:4)// ':'//currTime(5:6)

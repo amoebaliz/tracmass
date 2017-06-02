@@ -1,0 +1,181 @@
+!
+! More information at http://docs.tracmass.org/namelist.html
+!
+$INIT_NAMELIST_VERSION
+  gridVerNum  =	6
+/
+
+&INIT_GRID_DESCRIPTION
+  GCMname     = 'Academic test run',
+  GCMsource   = '',
+  gridName    = 'Test',
+  gridSource  = '',
+  gridDesc    = '',
+  inDataDir   = '/Volumes/P4/workdir/liz/analytical_tracmass/'
+/
+
+&INIT_CASE_DESCRIPTION
+  caseName       = 'analyical'
+  caseDesc       = 'analyical'
+/
+
+&INIT_GRID_SIZE
+  imt            = 93,
+  jmt            = 90,
+  km             = 50,
+  nst            = 2,
+  subGrid        = 0,
+  subGridImin    = -1,
+  subGridImax    = -1,
+  subGridJmin    = -1,
+  subGridJmax    = -1,
+  SubGridFile    = '',
+  subGridID      = 1,
+/
+
+&INIT_BASE_TIME
+  baseSec        =    0,
+  baseMin        =    0,
+  baseHour       =    0,
+  baseDay        =    1,
+  baseMon        =    1,
+  baseYear       = 1990,
+  jdoffset       =    0,
+/
+
+&INIT_GRID_TIME
+  fieldsPerFile = 2,
+  ngcm          = 24,    
+  iter          = 12, 
+  intmax        = 146000,
+  minvelJD      = -1,
+  maxvelJD      = -1
+/
+
+&INIT_START_DATE
+  startHour     = 0,
+  startDay      = 1,
+  startMon      = 1,
+  startYear     = 2010,
+  startJd       = 0,
+  intmin        = -1
+/
+
+&INIT_RUN_TIME
+  intspin = 1,  
+  intrun  = 9,
+/
+
+&INIT_WRITE_TRAJS
+  twritetype      = 1,
+  kriva           = 1,
+  outDataDir      = '/Volumes/P4/workdir/liz/analytical_tracmass/',
+  outDataFile     = 'test_analytical',
+  intminInOutFile = 1,
+           intpsi = 120,
+/
+
+&INIT_SEEDING
+  nff           = 1,
+  isec          = 4,
+  idir          = 0,
+  nqua          = 1, 
+  partQuant     = 2,
+  ntracmax      = 10000000,
+  loneparticle  = -1,
+  SeedType      = 1,
+  ist1          = 20,	 
+  ist2          = 20,	 
+  jst1          = 20,
+  jst2          = 20,
+  kst1          = 50,		 
+  kst2          = 50,
+  tst1          = -1,
+  tst2          = -1,
+  seedDir       = '',
+  seedFile      = '',
+  varSeedFile   = 0,
+  seedTime      = 0,
+  seedAll       = 0,
+  seedPos       = 1,
+  seedparts     = 0,
+  seedpart_id   = 0,
+/
+&INIT_KILLZONES
+            nend =    4,
+            ienw  =   1,    1,   92,    1,
+            iene  =   1,   93,   93,   93,
+            jens  =   1,   89,    1,    1,
+            jenn  =  90,   90,   90,    1,
+            timax = 356000.0
+/
+
+&INIT_TEMP_SALT
+  tmin0         =  -50.,
+  tmax0         =  400.,
+  smin0         = -500.,
+  smax0         =  400.,
+  rmin0         = -100.,
+  rmax0         =  500.,
+  ! 
+  tmine         =  -50.
+  tmaxe         =  400.,
+  smine         = -150.,
+  smaxe         =  500.,
+  rmine         = -100.,
+  rmaxe         =  500.
+/
+
+&INIT_DIFFUSION
+  ah            = 2000., 
+  av            = 0.
+/
+  
+&INIT_SEDIMENT
+  partdiam      = 0.001, 
+  rhos          = 2620., 
+  cwamp         = 20.,
+  twave         = 8.,
+  critvel       = 0.1/
+
+! **************** !
+! --- GLOSSARY --- !
+! **************** !
+!
+! --- INIT_WRITE_TRAJS ---
+!
+! twritetype:     1 = twrite = tt 
+!                 2 = updateclock; twrite = currJDtot
+!                 other = twrite = real(ints,kind=8)
+!
+!
+! kriva:          0 = no writing
+!                 1 = write at time intervals of gcm datasets
+!                 2 = write each grid-crossing and time change
+!                 3 = write at each iteration (all the time)
+!                 4 = write only start and end positions
+!                 5 = write at chosen intervals
+!
+!
+! intminInOutFile:
+!                  Should intmin be included to the outfile?
+!                  rco_run.in:
+!                  0 =  Use outDataFile to name files
+!                  1 =  Append intmin to all output files
+!
+!
+! --- INIT_SEEDING --- 
+!
+!
+! nff:            1 = Follow trajectories forward
+!                 2 = Follow trajectories backward
+!                 3 = Follow trajectories both ways.
+!
+! isec:           1 = Seed particles meridional(y-z)
+!                 2 = Seed particles zonal(x-z)
+!                 3 = Seed particles horiz(x-y)
+!                 4 = Seed particles in the middle of T-box
+!
+! idir:           1 = follow positive direction (east/north)  
+!                -1 = follow negative direction (west/south)
+!                 0 = both directions
