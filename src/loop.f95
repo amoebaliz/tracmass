@@ -37,6 +37,7 @@ SUBROUTINE loop
 
   ! === Loop variables ===
   INTEGER                                    :: i,  j,  k, l, m, n
+  INTEGER                                    :: ntracend   !! LD: added variable
   ! === Variables to interpolate fields ===
   REAL                                       :: temp, salt, dens
   REAL                                       :: temp2, salt2, dens2
@@ -49,7 +50,6 @@ SUBROUTINE loop
   
   dstep = 1.d0 / dble(iter)
   dtmin = dstep * tseas
-    
   !==========================================================
   !===   Read in end positions from a previous run        === 
   !==========================================================
@@ -145,16 +145,16 @@ SUBROUTINE loop
   call fancyTimer('initialize dataset','start')
   ff=dble(nff)
   ints = intstart
-  call updateclock  
+  call updateclock 
   call readfields   ! initial dataset
   call active_init
   ntrac = 0
+  ntracend = 0
   call fancyTimer('initialize dataset','stop')
-
   !==========================================================
   !=== Start main time loop                               ===
   !==========================================================
-  intsTimeLoop: do ints=intstart+nff, intstart+intrun, nff
+  intsTimeLoop: do ints=intstart+nff, intstart+intrun, nff 
      call fancyTimer('reading next datafield','start')
      tt = ints*tseas
      if (degrade_counter < 1) call readfields
@@ -169,8 +169,7 @@ SUBROUTINE loop
       call write_streamfunctions
       call writetracer
      endif
-
-     intspinCond: if(ints*nff <= (intstart+intspin)*nff) then
+     intspinCond: if(ints*nff <= (intstart+intspin)*nff) then 
         call fancyTimer('seeding','start')
         call seed (tt,ts)
         call fancyTimer('seeding','stop')
@@ -207,7 +206,6 @@ SUBROUTINE loop
         niter  =  nrj(4,ntrac)
         ts     =  dble(nrj(5,ntrac))
         tss    =  0.d0
-
 #ifdef rerun
         lbas=nrj(8,ntrac)
         if(lbas.lt.1 .or.lbas.gt.nend) then
@@ -237,6 +235,15 @@ SUBROUTINE loop
               nrj(4,ntrac) = niter
               nrj(5,ntrac) = idint(ts)
               nrj(7,ntrac) = 1
+              if (tss == dble(iter) & 
+                 .and. ints == (intstart+intrun)) then  !!LD: ADDED TO GET FINAL PARTICAL LOCATIONS
+                 endrj(1,ntrac) = x1
+                 endrj(2,ntrac) = y1
+                 endrj(3,ntrac) = z1
+                 endrj(4,ntrac) = tt
+                 endrj(5,ntrac) = subvol
+                 ntracend = ntracend + 1
+              endif
               cycle ntracLoop
            endif
            
@@ -279,8 +286,8 @@ SUBROUTINE loop
               tra(ia,ja,ka)=tra(ia,ja,ka)+real(subvol)
            end if
 #endif /*tracer*/
-           call writedata(11)
-
+           call writedata(11) !!LD: Normal, write data to file
+           !! NOT GETTING LAST CALCULATION DONE
            !==============================================! 
            ! calculate the 3 crossing times over the box  ! 
            ! choose the shortest time and calculate the   !
@@ -390,7 +397,7 @@ SUBROUTINE loop
               endif
               if(ib > IMT      ) ib=ib-IMT 
            end if
-           
+
            ! === make sure that trajectory ===
            ! === is inside ib,jb,kb box    ===
            if(x1 /= dble(idint(x1))) ib=idint(x1)+1 
@@ -412,7 +419,7 @@ SUBROUTINE loop
            !if (errCode.ne.0) cycle ntracLoop
            call errorCheck('cornerError', errCode)
            if (errCode.ne.0) cycle ntracLoop
-           
+
            ! === diffusion, which adds a random position ===
            ! === position to the new trajectory          ===
 #if defined diffusion     
@@ -426,7 +433,6 @@ SUBROUTINE loop
                  exit niterLoop                                
               endif
            enddo nendloop
-           
           if(ia>imt .or. ib>imt .or. ja>jmt .or. jb>jmt &
                .or. ia<1 .or. ib<1 .or. ja<1 .or. jb<1) then
              print *,'Warning: Trajectory leaving model area'
@@ -434,7 +440,6 @@ SUBROUTINE loop
              nrj(6,ntrac)=1
              exit niterLoop                                
           end if
-
 
 
 
@@ -461,20 +466,22 @@ SUBROUTINE loop
               exit niterLoop
            endif
         end do niterLoop
-
         nout=nout+1
         call writedata(17)
         nrj(6,ntrac)=1
      end do ntracLoop
- 
      call print_cycle_loop()
-
      IF (ntractot /= 0 .AND. ntractot - nout - nerror == 0  .AND. &
           seedTime /= 2) THEN
         EXIT intsTimeLoop
      END IF
-     
   end do intsTimeLoop
+  endntracLoop: do ntrac=1,ntracend !!! LD:ADD END LOCATION CYCLE
+      x1     =  endrj(1,ntrac)      !!!
+      y1     =  endrj(2,ntrac)      !!!
+      z1     =  endrj(3,ntrac)      !!!
+      call writedata(15)            !!!
+  end do endntracLoop
   call print_end_loop
   
 return

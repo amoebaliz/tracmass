@@ -61,20 +61,18 @@ SUBROUTINE readfields
 
   call updateclock
   call datasetswap
-
   ! === update the time counting ===
   intpart1    = mod(ints,24)
   intpart2    = floor((ints)/24.)
-  dstamp      = 'xxxx/MaPhil-LD.HCo07T_avg_xxxx-xx-xxT13:00:00.nc'
-
-  write (dstamp(1:4),'(i4.4)')   currYear
-  write (dstamp(27:30),'(i4i2)') currYear
-  write(dstamp(32:33),'(i2.2)')  currMon
-  write(dstamp(35:36),'(i2.2)')  currDay
+  dstamp      = 'test_xxxx_xx-xx.nc'
+  write (dstamp(6:9),'(i4i2)') currYear
+  write(dstamp(11:12),'(i2.2)')  currMon
+  write(dstamp(14:15),'(i2.2)')  currDay
 !  write(dstamp(35:36),'(i2.2)')  currHour
 !  write(dstamp(38:39),'(i2.2)')  currMin
 
   dataprefix  = trim(inDataDir) // dstamp
+  !print *, dataprefix
   tpos        = intpart1+1
   uvel        = get3DfieldNC(trim(dataprefix) ,   'u')
   vvel        = get3DfieldNC(trim(dataprefix) ,   'v')

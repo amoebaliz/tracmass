@@ -230,7 +230,8 @@ SUBROUTINE init_params
    baseJD   =  jdate(baseYear  ,baseMon  ,baseDay)  + &  
            ( dble((baseHour)*3600 + baseMin*60 + baseSec) / 86400 )
    if (startJD < 1) then
-      startJD  =  jdate(startYear ,startMon ,startDay) + 1 + &  
+      !startJD  =  jdate(startYear ,startMon ,startDay) + 1 + &  ! LD: Took out +1
+       startJD  =  jdate(startYear ,startMon ,startDay) + & 
            ( dble((startHour)*3600 + startMin*60 + startSec) / 86400 ) -baseJD
    else
       call  gdate (baseJD + startJD ,startYear , startMon ,startDay)
@@ -252,11 +253,12 @@ SUBROUTINE init_params
    end if
 
    if (endJD < startJD) then
-!      endJD =  baseJD + startJD + intrun*ngcm/24. -2   !! LD: changed to -1 so enddate contains entire run 
-      endJD =  baseJD + startJD + intrun*ngcm/24. -1 
+!      endJD =  baseJD + startJD + intrun*ngcm/24. -2   !! LD: removed -2 so enddate corresponds w/ end 
+       endJD =  baseJD + startJD + intrun*ngcm/24.    
    end if
    call  gdate (endJD ,endYear , endMon ,endDay)
-   endFrac = (endJD-int(endJD))*24
+   !endFrac = (endJD-int(endJD))*24 !!! LD: giving weird decimal result for min/hrs, added ceiling to calc
+   endFrac = ceiling((endJD-int(endJD))*24) 
    endHour = int(endFrac)
    endFrac = (endFrac - endHour) * 60
    EndMin  = int(endFrac)
@@ -267,7 +269,7 @@ SUBROUTINE init_params
    else
       intmax = jd2ints(real(ceiling(endJD),8))
    end if
-   
+
    if (maxvelJD > 0) then
       minvelints = jd2ints(minvelJD)
       maxvelints = jd2ints(maxvelJD)
@@ -354,6 +356,7 @@ SUBROUTINE init_params
       
       ! === Init mod_traj ===
       ALLOCATE ( trj(NTRJ,ntracmax), nrj(NNRJ,ntracmax) )
+      ALLOCATE ( endrj(NTRJ,ntracmax)) !! LD: added additional storage vairable lrj
       ALLOCATE ( nexit(NEND) ) 
       nrj = 0
       trj = 0.d0

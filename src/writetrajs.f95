@@ -189,7 +189,6 @@ CONTAINS
        !       vort = (vvel(xf+1,yf,zf)-vvel(xf-1,yf,zf))/4000 - &
        !            (uvel(xf,yf+1,zf)-uvel(xf,yf-1,zf))/4000   
     !end if
-    
 subvol =  trj(5,ntrac)
 t0     =  trj(7,ntrac)
 #if defined tempsalt
@@ -272,9 +271,11 @@ t0     =  trj(7,ntrac)
        twrite = tt
     else if (twritetype==2) then
        call updateclock
-       twrite = currJDtot
+       !twrite = currJDtot !!! LD:added -1 so reflects # steps from start
+       twrite = currJDtot-1
     else
-       twrite = real(ints,kind=8)
+       !twrite = real(ints,kind=8) !!! LD:added -1 so reflects # steps from start
+       twrite = real(ints-1,kind=8)
     end if
     select case (sel)       
     case (10) !in
@@ -282,6 +283,7 @@ t0     =  trj(7,ntrac)
        write(unit=78 ,rec=recPosIn) ntrac,twrite,x14,y14,z14
        return
     case (11)
+       !print *, tt, ntrac, nrj(4,ntrac), niter, x14,y14
        if(  (kriva == 1 .and. nrj(4,ntrac)  ==  niter-1 ) .or. &
             (kriva == 2 .and. scrivi                    ) .or. &
             (kriva == 3                                 ) .or. &
@@ -299,14 +301,14 @@ t0     =  trj(7,ntrac)
     case (13)
        recPosKll = recPosKll + 1
        write(unit=77 ,rec=recPosKll) ntrac,twrite,x14,y14,z14   
-    case (15)
+    case (15)!LD: LAST no sed
        recPosRun = recPosRun + 1
-       write(unit=76 ,rec=recPosRun) ntrac,twrite,x14,y14,z14   
+       write(unit=76 ,rec=recPosRun) ntrac,twrite,x14,y14,z14 
     case (17) !out
        recPosOut = recPosOut + 1
        write(unit=77 ,rec=recPosOut) ntrac,twrite,x14,y14,z14   
     case (19) !end
-       recPosOut = recPosOut + 1
+       recPosOut = recPosOut + 1 
        write(unit=75 ,rec=recPosOut) ntrac,twrite,x14,y14,z14
     case (40) !error
        recPosErr=recPosErr + 1    

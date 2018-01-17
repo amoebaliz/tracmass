@@ -17,7 +17,7 @@ PROGRAM TRACMASS
   call init_params
   call coordinat
   call writesetup_main
-  
+
   modrundirCond: if(nff == 1) then ! forward 
      intstart =  intmin          
      intend   =  intmax
