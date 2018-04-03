@@ -7,22 +7,22 @@
         gridname = 'pipa',
       gridsource = 'Rutgers',
         griddesc = 'PIPA GLORYS Grid',
-       indatadir = '/Volumes/P4/workdir/liz/external_data/GLORYS_files/',
+       indatadir = '/Volumes/Abalone/GLORYS_CLIM/',
 /
 &INIT_CASE_DESCRIPTION
         casename = 'pipa',
         casedesc = 'Tracking particles in the Central Pacific',
 /
 &INIT_GRID_SIZE
-             imt =     232,
-             jmt =     111,
+             imt =    592,
+             jmt =    123,
               km =     75,
              nst =      2,
-         subgrid =      1,
+         subgrid =      0,
      subgridimin =    344,
      subgridimax =    575,
      subgridjmin =    450,
-     subgridjmax =    560,
+     subgridjmax =    540,
      subgridfile =     '',
        subgridid =       ,
 /
@@ -30,9 +30,10 @@
          basesec =      0,
          basemin =      0,
         basehour =      0,
-         baseday =      4,
-         basemon =     12,
-        baseyear =   1991,
+         baseday =      1,
+         basemon =      1,
+        baseyear =      1,
+       jdoffset  =      0,
 /
 &INIT_GRID_TIME
    fieldsperfile =      1,
@@ -43,40 +44,40 @@
         maxveljd =     -1,
 /
 &INIT_START_DATE
-        startsec =      0,
-        startmin =      0,
-       starthour =      0,
-        startday =     1,
-        startmon =     5,
-       startyear =     1999,
+        startsec =       0,
+        startmin =       0,
+       starthour =      12,
+        startday =   21,
+        startmon = 11,
+       startyear =  1993,
          startjd =     -1,
           intmin =     -1,
 /
 &INIT_RUN_TIME
          intspin =      1,
-          intrun =     10,
+          intrun =     30,
 /
 &INIT_WRITE_TRAJS
       twritetype =      1,
            kriva =      1,
-      outdatadir =  '/Volumes/P4/workdir/liz/PIPA_tracmass/forward/',
+      outdatadir = '/Volumes/Abalone/PIPA_trac/'
      outdatafile = 'test_pipa',
  intmininoutfile =      0,
           intpsi =    120,
 /
 &INIT_SEEDING
-             nff =     1,
-            isec =     1,
-            idir =     0,
-            nqua =     1,
-       partquant = 1000,
+             nff =       1,
+            isec =       3,
+            idir =       0,
+            nqua =       1,
+       partquant =    1000,
         ntracmax = 2000000,
     loneparticle =       0,
-        seedtype =       2,
-            ist1 =  158,
-            ist2 =  158,
-            jst1 =  76,
-            jst2 =  76,
+        seedtype =       1,
+            ist1 =     185,
+            ist2 =     195,
+            jst1 =      80,
+            jst2 =      90,
             kst1 =      75,
             kst2 =      75,
             tst1 =        ,
@@ -91,12 +92,12 @@
      seedpart_id =      0,
 /
 &INIT_KILLZONES
-            nend =    4,
-            ienw  =   1,   1,    1,    232,
-            iene  =   1,   232,  232,  232,
-            jens  =   1,   111,   111,   111,
-            jenn  =  111,   111,   1,    111,
-            timax =  100.0
+            nend =     4,
+            ienw  =    1,   1, 591,   1,
+            iene  =    1, 592, 592, 592,
+            jens  =    1, 122,   1,   1,
+            jenn  =  123, 123, 123,   1,
+            timax = 1000.0
 /
 &INIT_TEMP_SALT
            tmin0 =  -50.0,
