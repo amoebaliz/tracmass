@@ -8,23 +8,23 @@
 infil=/Users/liz/TOOLS/tracmass/projects/maphil/forward_template.in
 tempfil=$infil.tmp
 outfil=/Users/liz/TOOLS/tracmass/projects/maphil/maphil.in
-yr=2010
+yr=2012
 nmdays=(31 28 31 30 31 30 31 31 30 31 30 31)
 
-intrun=9
+intrun=30
 nff=1
 isec=4
 partquant=100
 
 
-while (($yr <= 2013)); do
-echo $yr
-      #if (($yr == 2010)); then
-      #   mon=12;
-      #else
-      mon=1;
-      #fi              
-
+while (($yr <= 2014)); do
+      echo $yr
+      if (($yr == 2010)); then
+         mon=10;
+      else
+         mon=1;
+      fi              
+      echo $mon
       ineq=$((yr%4))
       if (($ineq == 0)); then
          nmdays[1]=29
@@ -32,15 +32,15 @@ echo $yr
          nmdays[1]=28
       fi
 
-      while (($mon <= 5)) || (($mon == 12)); do
+      while (($mon <= 5)) || (($mon >= 10)) && (($mon <= 12)); do
             day=1
-            echo ${nmdays[$mon-1]}
-            while (($day <= ${nmdays[$mon-1]})); do   
- 
-                 # Edit pipa.in file
+            while [[ $day -le ${nmdays[$mon-1]} ]]; do   
+                  echo $yr $mon $day
+                  # Edit maphil.in template file
                   cp $infil $infil.tmp
   
-#                  sed -i -n "s/<OUTDIR>/$outdatadir/g" $tempfil
+#                 sed -i -n "s/<OUTDIR>/$outdatadir/g" $tempfil
+                   
                   sed -i -n "s/<DAY>/$day/g"           $tempfil
                   sed -i -n "s/<MONTH>/$mon/g"         $tempfil
                   sed -i -n "s/<YEAR>/$yr/g"           $tempfil 
@@ -57,7 +57,7 @@ echo $yr
             done
             ((mon+=1))
             if (($mon == 6)); then
-               mon=12
+               mon=10
             fi
       done
       ((yr+=1))
