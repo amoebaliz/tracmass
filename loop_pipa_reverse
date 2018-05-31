@@ -1,0 +1,55 @@
+#!/bin/bash
+
+# Script to automate multiple tracmass runs
+# Based on script by Ashley Van Name
+
+# ===================USER INPUT=====================#
+
+infil=/Users/elizabethdrenkard/TOOLS/tracmass/projects/pipa/backward_template.in
+tempfil=$infil.tmp
+outfil=/Users/elizabethdrenkard/TOOLS/tracmass/projects/pipa/pipa.in
+yr=1993
+nmdays=(31 28 31 30 31 30 31 31 30 31 30 31)
+
+intrun=30
+nff=-1
+isec=3
+partquant=1000
+
+while (($yr >= 1993)); do
+      if (($yr == 2013)); then
+         mon=11;
+      else
+         mon=12;
+      fi    
+
+      ineq=$((yr%4))
+      if (($ineq == 0)); then
+         nmdays[1]=29
+      else
+         nmdays[1]=28
+      fi 
+      while (($mon >= 1)); do
+            day=${nmdays[$mon-1]}
+            while (($day >= 1)); do
+                  echo $yr $mon $day
+                  # Edit pipa.in file
+                  cp $infil $infil.tmp
+
+                  sed -i -n "s/<DAY>/$day/g"   $tempfil
+                  sed -i -n "s/<MONTH>/$mon/g" $tempfil
+                  sed -i -n "s/<YEAR>/$yr/g"   $tempfil
+
+                  mv $tempfil $outfil
+
+                  # Run TRACMASS
+                  #./runtrm_pipa
+                  ((day+=-1))
+            done
+            ((mon+=-1))
+      done
+      ((yr+=-1))
+rm $infil.tmp*
+done
+
+
