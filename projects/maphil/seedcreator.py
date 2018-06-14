@@ -35,7 +35,7 @@ with open(sfname, 'w') as f:
                 if mask_rho[jj,ii] == 1:
                    # Coastal criteria
                    coast = mask_rho[jj-1,ii] + mask_rho[jj+1,ii] + mask_rho[jj,ii-1] + mask_rho[jj,ii+1]
-                   if  ((coast < 4)):# or (h[jj,ii]<10)) :
+                   if  ((coast < 4) or (h[jj,ii]<10)) :
                        row = [str(ii+1).zfill(5)] + [str(jj+1).zfill(5)] + [str(kk).zfill(5)] + [str(isec).zfill(5)] + [str(idir).zfill(5)] + [str(itim).zfill(5)]
                        writer.writerow(row)
                        iarray = np.append(iarray, ii)

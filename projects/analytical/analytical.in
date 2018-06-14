@@ -36,10 +36,10 @@ $INIT_NAMELIST_VERSION
 &INIT_BASE_TIME
   baseSec        =    0,
   baseMin        =    0,
-  baseHour       =    0,
+  baseHour       =    13,
   baseDay        =    1,
   baseMon        =    1,
-  baseYear       = 1990,
+  baseYear       = 1900,
   jdoffset       =    0,
 /
 
@@ -53,7 +53,7 @@ $INIT_NAMELIST_VERSION
 /
 
 &INIT_START_DATE
-  startHour     = 0,
+  startHour     = 13,
   startDay      = 1,
   startMon      = 1,
   startYear     = 2010,
@@ -62,12 +62,12 @@ $INIT_NAMELIST_VERSION
 /
 
 &INIT_RUN_TIME
-  intspin = 1,  
+  intspin = 2,  
   intrun  = 9,
 /
 
 &INIT_WRITE_TRAJS
-  twritetype      = 1,
+  twritetype      = 3,
   kriva           = 1,
   outDataDir      = '/Volumes/P4/workdir/liz/analytical_tracmass/',
   outDataFile     = 'test_analytical',
