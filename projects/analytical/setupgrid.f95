@@ -47,7 +47,7 @@ SUBROUTINE setupgrid
   map2d    = [3, 4, 1, 2]
   map3d    = [2, 3, 4, 1]
 
-  gridfile =  "/Volumes/P4/workdir/liz/analytical_tracmass/test_grd.nc"
+  gridfile =  "/Users/elizabethdrenkard/external_data/analytical_tracmass/test_grd.nc"
   ncTpos = 1
   !print *, trim(gridfile)
   dxv(:,:) = 1./get2DfieldNC(trim(gridfile), 'pm')
