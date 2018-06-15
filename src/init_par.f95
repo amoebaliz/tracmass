@@ -6,7 +6,7 @@ SUBROUTINE init_params
    USE mod_seed
    USE mod_grid
    USE mod_name
-   USE mod_time 
+   USE mod_time
    USE mod_domain
    USE mod_vel
    USE mod_traj
@@ -27,7 +27,7 @@ SUBROUTINE init_params
    IMPLICIT NONE
 
 !!----------------------------------------------------------------------------
-   
+
    INTEGER                                    ::  argint1 ,argint2
    INTEGER                                    ::  dummy ,factor ,i ,dtstep
    INTEGER                                    ::  gridVerNum ,runVerNum
@@ -47,13 +47,13 @@ SUBROUTINE init_params
                                     baseMon, baseYear, jdoffset
    namelist /INIT_GRID_TIME/        fieldsPerFile, ngcm, iter, intmax,       &
                                     minvelJD, maxvelJD
-   namelist /INIT_START_DATE/       startSec, startMin, startHour,           & 
+   namelist /INIT_START_DATE/       startSec, startMin, startHour,           &
                                     startDay, startMon, startYear,           &
                                     startJD, intmin, noleap
    namelist /INIT_RUN_TIME/         intspin, intrun, seedintsdelta
    namelist /INIT_WRITE_TRAJS/      twritetype, kriva, outDataDir, outDataFile, &
                                     outdircase, intminInOutFile, intpsi, outdirdate
-          
+
    namelist /INIT_SEEDING/          nff, isec, idir, nqua, partQuant,        &
                                     ntracmax, loneparticle, SeedType, ist1,  &
                                     ist2, jst1, jst2, kst1, kst2, tst1, tst2,&
@@ -63,17 +63,18 @@ SUBROUTINE init_params
    namelist /INIT_KILLZONES/        nend, ienw, iene, jens, jenn, timax
    namelist /INIT_TEMP_SALT/        tmin0, tmax0, smin0, smax0, rmin0, rmax0,&
                                     tmine, tmaxe, smine, smaxe, rmine, rmaxe
-#if defined diffusion || turb 
+#if defined diffusion || defined turb
    namelist /INIT_DIFFUSION/        ah, av
 #endif
 #ifdef sediment
    namelist /INIT_SEDIMENT/         partdiam, rhos, cwamp, twave, critvel
 #endif
 
-!!--------------------------------------------------------------------------  
-   
+!!--------------------------------------------------------------------------
+
    Project  = PROJECT_NAME
    Case     = CASE_NAME
+
    IF ((IARGC() > 0) )  THEN
       CALL getarg(1,project)
    END IF
@@ -81,7 +82,7 @@ SUBROUTINE init_params
    IF ((IARGC() > 1) )  THEN
       CALL getarg(2, Case)
    END IF
-   
+
    CALL getenv('TRMPROJDIR',projdir)
    if (len(trim(projdir)) == 0) then
       CALL getenv('TRMDIR',ormdir)
@@ -95,7 +96,7 @@ SUBROUTINE init_params
 
    OPEN (8,file=trim(projdir)//'/'//trim(Project)//'.in',    &
         & status='OLD', delim='APOSTROPHE')
-   ! -- Check if the namefiles has correct version number. 
+   ! -- Check if the namefiles has correct version number.
    READ (8,nml=INIT_NAMELIST_VERSION)
    IF (gridVerNum < 6) THEN
       PRINT *,'                     ERROR                     '
@@ -119,7 +120,7 @@ SUBROUTINE init_params
    READ (8,nml=INIT_DIFFUSION)
 #endif
 #ifdef sediment
-   READ (8,nml=INIT_SEDIMENT)   
+   READ (8,nml=INIT_SEDIMENT)
 #endif
    CLOSE (8)
 
@@ -147,23 +148,23 @@ SUBROUTINE init_params
    READ (8,nml=INIT_SEEDING)
    READ (8,nml=INIT_KILLZONES)
    READ (8,nml=INIT_TEMP_SALT)
-#if defined diffusion || turb 
+#if defined diffusion || defined turb
    READ (8,nml=INIT_DIFFUSION)
 #endif
 #ifdef sediment
-   READ (8,nml=INIT_SEDIMENT)   
+   READ (8,nml=INIT_SEDIMENT)
 #endif
    CLOSE (8)
-      
+
    SELECT CASE (subGrid)
-   CASE (0)          
-      PRINT *,'Sub-grid    : Use the Full grid.'     
-      subGridImin =   1 
+   CASE (0)
+      PRINT *,'Sub-grid    : Use the Full grid.'
+      subGridImin =   1
       subGridJmin =   1
       subGridKmin =   1
       subGridImax = imt
-      subGridJmax = jmt 
-      subGridKmax = km 
+      subGridJmax = jmt
+      subGridKmax = km
    CASE (1)
       PRINT *,'Sub-grid    : ', subGridImin ,subGridImax, &
            &   subGridJmin ,subGridJmax
@@ -335,14 +336,14 @@ SUBROUTINE init_params
 #ifdef varbottombox
       ALLOCATE ( dztb(imt,jmt,nst) )
 #endif /*varbottombox*/
-      ALLOCATE ( dxdy(imt,jmt) )   
+      ALLOCATE ( dxdy(imt,jmt) )
       ALLOCATE ( kmt(imt,jmt), dz(km) )
-    
-      ! --- Allocate velocity fields, temperature, salinity, density, --- 
+
+      ! --- Allocate velocity fields, temperature, salinity, density, ---
       ! --- sea-surface height, and trajectory data                   ---
 !      ALLOCATE ( uflux(imt,jmt,km,nst), vflux(imt,0:jmt,km,nst) ) ! LD: 3-8-2017: Removed vflux 0:jmt for just jmt
        ALLOCATE ( uflux(imt,jmt,km,nst), vflux(imt,jmt,km,nst) )
-       ALLOCATE ( hs(imt,jmt,nst) ) ! LD MEEP TEST
+       ALLOCATE ( hs(imt,jmt,nst) ) ! LD Remived +1 from imt and jmt
 #if defined explicit_w || full_wflux
       ALLOCATE ( wflux(imt+2 ,jmt+2 ,0:km,NST) )
 #else
@@ -366,14 +367,14 @@ SUBROUTINE init_params
       if (nqua == 5 .AND. seedsubints(1)==-1) then
          print *,  "Error! "
          print *,  "At least one element in numseedsubints must be " // &
-                   "given when nqua=5 is used." 
+                   "given when nqua=5 is used."
          stop
       elseif  (nqua /= 5) then
          seedsubints(1) = 0
       end if
 
 #ifdef tempsalt
-      ALLOCATE ( tem(imt,jmt,km,nst) ) 
+      ALLOCATE ( tem(imt,jmt,km,nst) )
       ALLOCATE ( sal(imt,jmt,km,nst) )
       ALLOCATE ( rho(imt,jmt,km,nst) )
       tem = 0.
