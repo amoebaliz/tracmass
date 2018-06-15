@@ -81,7 +81,8 @@ MODULE mod_getfile
     s = start2d(map2d)
     c = count2d(map2d)
     d = c + s - 1
-    allocate ( field(c(1),c(2)), get2dfieldNC(imt+2,jmt) )
+    allocate ( field(c(1),c(2)), get2dfieldNC(imt+2,jmt) ) ! LD: old issue with backtrace error
+    allocate ( field(c(1),c(2)), get2dfieldNC(imt,jmt) )   ! LD: leaves out last eta_rho xi_rho
     field=0; get2dfieldNC=0
 
     ierr=NF90_OPEN(trim(fieldFile) ,NF90_NOWRITE ,ncid)
