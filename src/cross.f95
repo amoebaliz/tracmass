@@ -68,7 +68,7 @@ elseif(ijk.eq.2) then
 #endif
 elseif(ijk.eq.3) then
  ii=ka
-#if defined  explicit_w || full_wflux
+#if defined full_wflux || defined explicit_w
  uu=wflux(ia ,ja ,ka   ,nsm)
  um=wflux(ia ,ja ,ka-1 ,nsm)
 #else
@@ -129,7 +129,6 @@ else
 endif
 
 if(sn.le.0.d0) sn=UNDEF
-
 
 return
 end subroutine cross_stat

@@ -66,14 +66,14 @@ SUBROUTINE readfields
   intpart2    = floor((ints)/24.)
 
   !print *, 'MEEP', WRITE(*,'(f0.2)') currYear
-  dstamp      = 'xx/CCS-LD.FCo016_01Y_xxxx-xx-xxT12:00:00.nc'
+  dstamp      = 'xxxx/CCS-LD.HCo02Y_avg_xxxx-xx-xxT12:00:00.nc'
   !   dstamp      = 'xxxx/VIP-LD.HCo13T_avg_xxxx-xx-xxT00:00:00.nc'
   !  dstamp      = 'xxxx/VIP-LD.HCo12T_avg_xxxx-xx-xxTxx:xx:00.nc'
 
-  write (dstamp(1:2),'(i2.2)')   currYear
-  write (dstamp(22:25),'(i4.4)') currYear
-  write(dstamp(27:28),'(i2.2)')  currMon
-  write(dstamp(30:31),'(i2.2)')  currDay
+  write(dstamp(1:4),'(i4.4)')    currYear
+  write(dstamp(24:27),'(i4.4)')  currYear
+  write(dstamp(29:30),'(i2.2)')  currMon
+  write(dstamp(32:33),'(i2.2)')  currDay
 ! write(dstamp(35:36),'(i2.2)')  currHour
 ! write(dstamp(38:39),'(i2.2)')  currMin
   dataprefix  = trim(inDataDir) // dstamp

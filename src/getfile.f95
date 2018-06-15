@@ -1,9 +1,8 @@
 
 MODULE mod_getfile
   USE mod_grid
-#ifndef no_netcdf
   USE netcdf
-#endif
+
   IMPLICIT NONE
 
   INTEGER, DIMENSION(1)                      :: start1D  ,count1D
@@ -12,21 +11,18 @@ MODULE mod_getfile
   INTEGER, DIMENSION(4)                      :: start4D  ,count4D ,map4D
   INTEGER                                    :: ncTpos=0
   INTEGER                                    :: ierr, varid,ncid
-  LOGICAL                                    :: file_exists
-
-#ifndef no_netcdf
-  CONTAINS
+  
+CONTAINS
 
  !===   ===   ===   ===   ===   ===   ===   ===   ===   ===   ===   ===
 
   function getScalarNC (fieldFile ,varName)
     CHARACTER (len=*)                       :: fieldFile ,varName 
     REAL                                    :: getScalarNC
-    INTEGER,             DIMENSION(1)       :: d    
     INTEGER                                 :: varid ,ncid
   
     ierr=NF90_OPEN(trim(fieldFile) ,NF90_NOWRITE ,ncid)
-    if(ierr.ne.0) call printReadError(1, fieldFile, varName)    
+    if(ierr.ne.0) call printReadError(1, fieldFile, varName)
     ierr=NF90_INQ_VARID(ncid ,varName ,varid)
     if(ierr.ne.0) call printReadError(2, fieldFile, varName)
     ierr=NF90_GET_VAR(ncid ,varid ,getScalarNC)
@@ -39,20 +35,12 @@ MODULE mod_getfile
   function get1DfieldNC (fieldFile ,varName)
     CHARACTER (len=*)                       :: fieldFile ,varName 
     REAL, ALLOCATABLE,   DIMENSION(:)       :: get1dfieldNC
-    !INTEGER,             DIMENSION(1)       :: d    
     INTEGER                                 :: varid ,ncid
 
-    INQUIRE(FILE=fieldFile, EXIST=file_exists)
-    if (file_exists .eqv. .false.) then
-       print *, 'The file ' // fieldFile // ' doesnt exist'
-       stop
-    end if
-    
-    !d = count1d(1) + start1d(1) - 1
     allocate ( get1DfieldNC(count1d(1)) )
 
     ierr=NF90_OPEN(trim(fieldFile) ,NF90_NOWRITE ,ncid)
-    if(ierr.ne.0) call printReadError(1, fieldFile, varName)    
+    if(ierr.ne.0) call printReadError(1, fieldFile, varName)
     ierr=NF90_INQ_VARID(ncid ,varName ,varid)
     if(ierr.ne.0) call printReadError(2, fieldFile, varName)
     ierr=NF90_GET_VAR(ncid ,varid ,get1DfieldNC ,start1d ,count1d)
@@ -66,7 +54,7 @@ MODULE mod_getfile
     CHARACTER (len=*)                       :: fieldFile ,varName 
     REAL, ALLOCATABLE,   DIMENSION(:,:)     :: get2DfieldNC
     REAL, ALLOCATABLE,   DIMENSION(:,:)     :: field
-    INTEGER,             DIMENSION(4)       :: d, s, c, dimids
+    INTEGER,             DIMENSION(4)       :: s, c, dimids
     INTEGER                                 :: ncid, i
 
     if (ncTpos == 0) then
@@ -76,15 +64,13 @@ MODULE mod_getfile
        stop
     end if
 
-    start2d(1) = ncTpos
-    !start2d(map2d(3)) = ncTpos       
-    s = start2d(map2d)
+    start2d(map2d(3)) = ncTpos       
+    s = start2d
+    s(3) = s(3)
+    s(4) = s(4)
+    s = s(map2d)
     c = count2d(map2d)
-    d = c + s - 1
-    !allocate ( field(c(1),c(2)), get2dfieldNC(imt+2,jmt) ) !LD: issue with backtrace flags 
-    allocate ( field(c(1),c(2)), get2dfieldNC(imt,jmt) ) ! LD: leaves out last eta_rho,xi_rho points
-    !allocate ( field(c(1)+1,c(2)+1), get2dfieldNC(imt+1,jmt+1) )
-
+    allocate ( field(c(1),c(2)), get2dfieldNC(imt+2,jmt) )
     field=0; get2dfieldNC=0
 
     ierr=NF90_OPEN(trim(fieldFile) ,NF90_NOWRITE ,ncid)
@@ -94,6 +80,7 @@ MODULE mod_getfile
     ierr=NF90_GET_VAR(ncid ,varid , field, s,c)
     if(ierr.ne.0) call printReadError(3, fieldFile, varName)
     ierr=NF90_CLOSE(ncid)
+
     if ( all(map2d(1:2) == (/3,4/),DIM=1) .or. &
          all(map2d(2:3) == (/3,4/),DIM=1) ) then
        get2DfieldNC(1:imt,:) = field
@@ -111,7 +98,7 @@ MODULE mod_getfile
     CHARACTER (len=*)                       :: fieldFile ,varName 
     REAL, ALLOCATABLE, DIMENSION(:,:,:)     :: field
     REAL, ALLOCATABLE, DIMENSION(:,:,:)     :: get3dfieldNC
-    INTEGER,             DIMENSION(4)       :: d, s, c
+    INTEGER,             DIMENSION(4)       :: s, c
     INTEGER                                 :: i,j,k
 
     if (ncTpos == 0) then
@@ -123,9 +110,8 @@ MODULE mod_getfile
     start3d(1) = ncTpos
     s = start3d(map3d)
     c = count3d(map3d)
-    d = c + s - 1
 
-    allocate ( field(c(1), c(2),c(3)), get3dfieldNC(imt,jmt,km) )
+    allocate ( field(c(1), c(2),c(3)), get3dfieldNC(imt+2,jmt,km) )
     ierr = NF90_OPEN(trim(fieldFile) ,NF90_NOWRITE ,ncid)
     if(ierr.ne.0) call printReadError(1, fieldFile, varName)
     ierr=NF90_INQ_VARID(ncid ,varName ,varid)
@@ -163,8 +149,8 @@ MODULE mod_getfile
 
 
   subroutine printReadError(sel, fieldFile, varName)
- 
-    CHARACTER (len=*)                       :: fieldFile,VarName
+    USE netcdf
+    CHARACTER (len=*)                       :: fieldFile,VarName 
     INTEGER                                 :: sel, ndims, v,dimln
     INTEGER, DIMENSION(4)                   :: dimvec
     CHARACTER(len=20)                       :: dimname
@@ -199,7 +185,6 @@ MODULE mod_getfile
        
     end select
   end subroutine printReadError
-#endif
 end MODULE mod_getfile
 
 

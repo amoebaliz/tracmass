@@ -67,8 +67,8 @@ SUBROUTINE init_seed()
       print '(A,I7,A,I7)', '        jst1 : ', jst1, '   jst2 : ', jst2
       print '(A,I7,A,I7)', '        kst1 : ', kst1, '   kst2 : ', kst2
 
-   
    CASE (2)      ! Seed particles according to indices given in a list
+   
       landsd = 0 ! Assuming positions are already water points... but can test 
       IF (varSeedFile == 1) THEN
          fileStamp='/seed00000000.asc'
@@ -76,7 +76,7 @@ SUBROUTINE init_seed()
          fullSeedFile=trim(seedDir) // trim(fileStamp)
          PRINT *,'Particles are seeded from a dynamic listfile '
       ELSE
-         fullSeedFile=trim(seedDir) // trim(seedFile)        
+         fullSeedFile=trim(seedDir) // trim(seedFile)
          PRINT *,'Particles are seeded from a given listfile  '
       END IF
       
@@ -135,7 +135,7 @@ SUBROUTINE init_seed()
       ELSE
          PRINT *,'-----------------------------------------------------'
          PRINT *,'*** ERROR!                                        ***'
-         PRINT *,'*** Seed files does not exist                     ***' 
+         PRINT *,'*** Seed files does not exist                     ***'
          PRINT *,'File name    : '//trim(fullSeedFile)
          PRINT *,'*** Run terminated.                               ***'
          STOP
@@ -160,7 +160,7 @@ SUBROUTINE init_seed()
          nsdMax=0
          OPEN (unit=34,file=fullSeedFile,form='unformatted', ACTION = 'READ')
             READ(unit=34) seedMask
-         CLOSE (34)        
+         CLOSE (34)
          nsdMax=0
          
          DO ji=1,imt
@@ -190,10 +190,11 @@ SUBROUTINE init_seed()
          print *,'Particles are seeded according to the listfile'
          print *,'   '//trim(fullSeedFile)
       END IF chFile2d
-       
+
    END SELECT
-   print '(A,I7)','        Total number of cells : ', nsdMax + landsd
-   print '(A,I7)','         Cells masked as land : ', landsd
+   print '(A,I7)','   Total number of cells : ', nsdMax + landsd
+   print '(A,I7)','   Cells masked as land  : ', landsd
+
    if (seedparts > 0) then
       if (seedpart_id > seedparts) then
          print *,"ERROR! seedpart_ID higher than number of groups"
@@ -201,11 +202,11 @@ SUBROUTINE init_seed()
       end if
       jj = nint(float(nsdMax)/seedparts) * (seedpart_id-1) + 1
       ji = min(jj+nsdMax/seedparts, nsdMax)
-      nsdMax = ji - jj   
+      nsdMax = ji - jj
       seed_ijk(1:nsDmax,:) = seed_ijk(jj:ji,:)
       seed_set(1:nsDmax,:) = seed_set(jj:ji,:)
       print '(A,I2,A,I2,A)', '   seedpart is active with ', &
-                            seedparts, ' groups, number ',      & 
+                            seedparts, ' groups, number ',      &
                             seedpart_id, ' is seeded.'
       if (seedparts>0) write (rankstamp, '(A,i2.2)') '_r', seedpart_id  
    end if
@@ -213,10 +214,10 @@ SUBROUTINE init_seed()
    if (loneparticle>0) then
       print '(A,I7)','WARNING! Loneparticle is set to : ', loneparticle
    else
-      print '(A,I7)','                   Cells used : ', nsdMax
+      print '(A,I7)','              Cells used : ', nsdMax
    end if
    SELECT CASE (seedTime)
-  
+
    CASE (1)
      
       PRINT *,'------------------------------------------------------'
@@ -281,4 +282,5 @@ SUBROUTINE init_seed()
       PRINT*,' Each seed position is used once                   '
    
    END SELECT
+   
 END SUBROUTINE init_seed

@@ -11,7 +11,7 @@ $INIT_NAMELIST_VERSION
   gridName    = 'Test',
   gridSource  = '',
   gridDesc    = '',
-  inDataDir   = '/Volumes/P4/workdir/liz/analytical_tracmass/'
+  inDataDir   = '/Users/elizabethdrenkard/external_data/analytical_tracmass/'
 /
 
 &INIT_CASE_DESCRIPTION
@@ -54,7 +54,7 @@ $INIT_NAMELIST_VERSION
 
 &INIT_START_DATE
   startHour     = 13,
-  startDay      = 1,
+  startDay      = 2,
   startMon      = 1,
   startYear     = 2010,
   startJd       = 0,
@@ -62,32 +62,32 @@ $INIT_NAMELIST_VERSION
 /
 
 &INIT_RUN_TIME
-  intspin = 2,  
-  intrun  = 9,
+  intspin = 1,  
+  intrun  = 6,
 /
 
 &INIT_WRITE_TRAJS
   twritetype      = 3,
   kriva           = 1,
-  outDataDir      = '/Volumes/P4/workdir/liz/analytical_tracmass/',
+  outDataDir      = '/Users/elizabethdrenkard/external_data/analytical_tracmass/'
   outDataFile     = 'test_analytical',
   intminInOutFile = 1,
            intpsi = 120,
 /
 
 &INIT_SEEDING
-  nff           = 1,
-  isec          = 4,
+  nff           = 2,
+  isec          = 3,
   idir          = 0,
   nqua          = 1, 
-  partQuant     = 2,
+  partQuant     = 4,
   ntracmax      = 10000000,
   loneparticle  = -1,
   SeedType      = 1,
-  ist1          = 20,	 
-  ist2          = 20,	 
-  jst1          = 20,
-  jst2          = 20,
+  ist1          = 47,	 
+  ist2          = 50,	 
+  jst1          = 27,
+  jst2          = 30,
   kst1          = 50,		 
   kst2          = 50,
   tst1          = -1,
