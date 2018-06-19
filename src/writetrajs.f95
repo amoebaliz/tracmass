@@ -58,11 +58,20 @@ CONTAINS
          write (partstamp, '(A,i6.6)') '_p', max(ints-intstart,0)+1
       end if
       
-    fullWritePref =  trim(outDataDir)  // trim(outDataFile) //    &
-                     trim(inargstr1)   // trim(inargstr2)   //    & 
-                     trim(intminstamp) // trim(partstamp)   //    &
-                     trim(rankstamp)
+!    fullWritePref =  trim(outDataDir)  // trim(outDataFile) //    &  !!! LD: COMMENTED OUT b/c DIDN'T WANT ALL
+!                     trim(inargstr1)   // trim(inargstr2)   //    &  !!!     THIS IN FILE NAME - just what's in
+!                     trim(intminstamp) // trim(partstamp)   //    &  !!!     .in file
+!                     trim(rankstamp)
 
+    fullWritePref =  trim(outDataDir)  // trim(outDataFile) 
+
+    print *, 'MEEP1', outDataFile
+    
+    print *, 'MEEP2', inargstr1
+    print *, 'MEEP3',inargstr2
+    print *, 'MEEP4',intminstamp
+    print *, 'MEEP5',partstamp
+    print *, 'MEEP6',rankstamp 
 #if defined textwrite
     open(56, file=trim(fullWritePref)//'_run.asc')    
     open(57, file=trim(fullWritePref)//'_out.asc')  
