@@ -63,7 +63,7 @@ $INIT_NAMELIST_VERSION
 
 &INIT_RUN_TIME
   intspin = 2,  
-  intrun  = 8,
+  intrun  = 9,
 /
 
 &INIT_WRITE_TRAJS
@@ -80,7 +80,7 @@ $INIT_NAMELIST_VERSION
   isec          = 3,
   idir          = 0,
   nqua          = 1, 
-  partQuant     = 25,
+  partQuant     = 16,
   ntracmax      = 10000000,
   loneparticle  = -1,
   SeedType      = 1,

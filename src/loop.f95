@@ -239,7 +239,7 @@ SUBROUTINE loop
               nrj(5,ntrac) = idint(ts)
               nrj(7,ntrac) = 1
               if (tss == dble(iter) & 
-                 .and. ints == (intstart+intrun)) then  !!LD: ADDED TO GET FINAL PARTICAL LOCATIONS
+                 .and. ints == (intstart+intrun) ) then
                  endrj(1,ntrac) = x1
                  endrj(2,ntrac) = y1
                  endrj(3,ntrac) = z1
@@ -479,11 +479,14 @@ SUBROUTINE loop
         EXIT intsTimeLoop
      END IF
   end do intsTimeLoop
-  endntracLoop: do ntrac=1,ntracend !!! LD:ADD END LOCATION CYCLE
-      x1     =  endrj(1,ntrac)      !!!
-      y1     =  endrj(2,ntrac)      !!!
-      z1     =  endrj(3,ntrac)      !!!
-      call writedata(15)            !!!
+  endntracLoop: do ntrac=1,ntractot        !!! LD: ADD END LOCATION CYCLE
+      if( int(endrj(1,ntrac)).ne.0 .and. & !!! LD: CRITERIA TO OMIT KILLED
+          int(endrj(2,ntrac)).ne.0 ) then  !!!     OR UNTRACKED PARTICLES
+          x1     =  endrj(1,ntrac)         !!!
+          y1     =  endrj(2,ntrac)         !!!
+          z1     =  endrj(3,ntrac)         !!!
+          call writedata(15) 
+      endif           
   end do endntracLoop
   call print_end_loop
   

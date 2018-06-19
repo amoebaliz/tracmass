@@ -72,12 +72,11 @@ SUBROUTINE readfields
 !  write(dstamp(38:39),'(i2.2)')  currMin
 
   dataprefix  = trim(inDataDir) // dstamp
-  !print *, dataprefix
+!  print *, dataprefix
   tpos        = intpart1+1
   uvel        = get3DfieldNC(trim(dataprefix) ,   'u')
   vvel        = get3DfieldNC(trim(dataprefix) ,   'v')
   ssh         = get2dfieldNC(trim(dataprefix) ,'zeta')
-
 #ifdef explicit_w
   wvel      = get3DfieldNC(trim(dataprefix) ,'omega')
 #endif
@@ -145,7 +144,6 @@ SUBROUTINE readfields
   akt(:,:,0:km-1,2) = ak2(:,:,:)
 #endif
 #endif
-
   return
 
 end subroutine readfields

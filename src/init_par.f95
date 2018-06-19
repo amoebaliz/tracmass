@@ -357,7 +357,7 @@ SUBROUTINE init_params
       
       ! === Init mod_traj ===
       ALLOCATE ( trj(NTRJ,ntracmax), nrj(NNRJ,ntracmax) )
-      ALLOCATE ( endrj(NTRJ,ntracmax)) !! LD: added additional storage vairable lrj
+      ALLOCATE ( endrj(NTRJ,ntracmax)) !! LD: added additional storage variable
       ALLOCATE ( nexit(NEND) ) 
       nrj = 0
       trj = 0.d0
