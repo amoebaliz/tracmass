@@ -36,7 +36,7 @@ $INIT_NAMELIST_VERSION
 &INIT_BASE_TIME
   baseSec        =    0,
   baseMin        =    0,
-  baseHour       =    13,
+  baseHour       =    12,
   baseDay        =    1,
   baseMon        =    1,
   baseYear       = 1900,
@@ -53,17 +53,17 @@ $INIT_NAMELIST_VERSION
 /
 
 &INIT_START_DATE
-  startHour     = 13,
-  startDay      = 2,
-  startMon      = 1,
-  startYear     = 2010,
+  startHour     = 12,
+  startDay      = 31,
+  startMon      = 12,
+  startYear     = 2009,
   startJd       = 0,
   intmin        = -1
 /
 
 &INIT_RUN_TIME
-  intspin = 1,  
-  intrun  = 6,
+  intspin = 2,  
+  intrun  = 8,
 /
 
 &INIT_WRITE_TRAJS
@@ -76,18 +76,18 @@ $INIT_NAMELIST_VERSION
 /
 
 &INIT_SEEDING
-  nff           = 2,
+  nff           = 1,
   isec          = 3,
   idir          = 0,
   nqua          = 1, 
-  partQuant     = 4,
+  partQuant     = 25,
   ntracmax      = 10000000,
   loneparticle  = -1,
   SeedType      = 1,
-  ist1          = 47,	 
-  ist2          = 50,	 
-  jst1          = 27,
-  jst2          = 30,
+  ist1          = 4,	 
+  ist2          = 4,	 
+  jst1          = 3,
+  jst2          = 3,
   kst1          = 50,		 
   kst2          = 50,
   tst1          = -1,
