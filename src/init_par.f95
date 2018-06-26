@@ -232,8 +232,20 @@ SUBROUTINE init_params
            ( dble((baseHour)*3600 + baseMin*60 + baseSec) / 86400 )
    if (startJD < 1) then
       !startJD  =  jdate(startYear ,startMon ,startDay) + 1 + &  ! LD: Took out +1
-       startJD  =  jdate(startYear ,startMon ,startDay) + & 
+      startJD  =  jdate(startYear ,startMon ,startDay) + & 
            ( dble((startHour)*3600 + startMin*60 + startSec) / 86400 ) -baseJD
+
+      ! LD: ADDED Leap year criteria for printing start date if entered 
+      !     entered start date of 2/29 with no-leap files 
+      !     ... no idea why this would happen, you'd think the user'd know 
+      !     the gcm didn't have leap years but just in case ...
+      if ((mod(startYear, 4) == 0)  .and. (startMon == 2) .and. & 
+          (startDay == 29) .and. noleap) then
+         ! update start day
+         call  gdate (baseJD + startJD + 1, startYear , startMon ,startDay) 
+      endif
+      !
+
    else
       call  gdate (baseJD + startJD ,startYear , startMon ,startDay)
       startFrac = (startJD-int(startJD))*24
@@ -241,23 +253,39 @@ SUBROUTINE init_params
       startFrac = (startFrac - startHour) * 60
       startMin  = int(startFrac)
    end if
-   
+
+
    if (nff == 1) then
       intmin = jd2ints(startJD)
    else
       intmin = jd2ints(real(ceiling(startJD),8))
    end if
 
+
    if (endJD < 1) then
       endJD  =  jdate(endYear ,endMon ,endDay) + 1 + &  
            ( dble((endHour)*3600 + endMin*60 + endSec) / 86400 ) -baseJD
+
    end if
 
    if (endJD < startJD) then
 !      endJD =  baseJD + startJD + intrun*ngcm/24. -2   !! LD: removed -2 so enddate corresponds w/ end 
        endJD =  baseJD + startJD + intrun*ngcm/24.    
+      !
+      ! LD: leap year criteria:
+      if ((mod(startYear, 4) == 0)  .and.                                &
+          ((startMon < 2) .or. ((startMon == 2) .and. (startDay <= 28))) &
+          .and. noleap) then
+
+          endJD =  baseJD + startJD + intrun*ngcm/24. + 1 
+
+      endif
+      !
+      ! 
    end if
+
    call  gdate (endJD ,endYear , endMon ,endDay)
+
    !endFrac = (endJD-int(endJD))*24 !!! LD: giving weird decimal result for min/hrs, added ceiling to calc
    endFrac = ceiling((endJD-int(endJD))*24) 
    endHour = int(endFrac)
