@@ -138,7 +138,8 @@ make_dict = 1
 if make_dict:
    # ONE-TIME CREATION OF DICTIONARY CONTAINING SOURCE LOCATIONS
    # SINK SOURCE FILES
-   fil_dir = '/Users/elizabethdrenkard/Documents/Collaborations/MAPHIL/Connectivity_Grid/'
+   # fil_dir = '/Users/elizabethdrenkard/Documents/Collaborations/MAPHIL/Connectivity_Grid/'
+   fil_dir = ''
    fil_nms = ['camotes_vertices_sites_results.txt', \
               'camotes_nearby_sites_results.txt',   \
               'cuatro_islas_results.txt',           \
@@ -173,9 +174,11 @@ make_ncfil(src_sink_dict)
 trmrn = 'maphil'
 #(CASENAME, PROJECTNAME) :: Initiates pytraj
 tr = pytraj.Trm(trmrn,trmrn)
-grdfil     = '/Users/elizabethdrenkard/Documents/Collaborations/MAPHIL/MaPhil_grd_high_res_bathy_mixedJerlov.nc'
+#grdfil = '/Users/elizabethdrenkard/Documents/Collaborations/MAPHIL/MaPhil_grd_high_res_bathy_mixedJerlov.nc'
+grdfil = '/Volumes/P4/workdir/liz/MODELS/MAPHIL/Inputs/GRID/MaPhil_grd_high_res_bathy_mixedJerlov.nc'
 mask = nc.Dataset(grdfil).variables['mask_rho'][:].squeeze()
-outdatadir = '/Users/elizabethdrenkard/external_data/maphil_tracmass/'
+#outdatadir = '/Users/elizabethdrenkard/external_data/maphil_tracmass/'
+outdatadir = '/Volumes/P4/workdir/liz/MAPHIL_tracmass/maphil/'
 
 all_mons = [1,2,3,4,5,10,11,12]
 ndays = [31,28,31,30,31,30,31,31,30,31,30,31]
