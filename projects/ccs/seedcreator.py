@@ -28,10 +28,10 @@ with open(sfname, 'w') as f:
         jarray = []
 #        n=0
         # Evaluate whether point is water and whether it touches land
-#        for jj in range(1,mask_rho.shape[0]-1):
-#            for ii in range(1,mask_rho.shape[1]-1):
-        for jj in range(300,400):
-            for ii in range(250,350):
+        for jj in range(1,mask_rho.shape[0]-1):
+            for ii in range(1,mask_rho.shape[1]-1):
+#        for jj in range(200,450):
+#            for ii in range(250,350):
                 if mask_rho[jj,ii] == 1:
                    # Coastal criteria
                    coast = mask_rho[jj-1,ii] + mask_rho[jj+1,ii] + mask_rho[jj,ii-1] + mask_rho[jj,ii+1]

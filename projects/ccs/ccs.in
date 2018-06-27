@@ -7,7 +7,7 @@
         gridname = 'ccs',
       gridsource = 'edrenkard',
         griddesc = '4 km simulation of the California Current System',
-       indatadir = '/Volumes/Abalone/CCS/016/',
+       indatadir = '/Volumes/Abalone/CCS/his2/',
 /
 &INIT_CASE_DESCRIPTION
         casename = 'ccs',
@@ -38,7 +38,7 @@
 &INIT_GRID_TIME
    fieldsperfile =      2,
             ngcm =     24,
-            iter =     10,
+            iter =      1,
           intmax = 146000,
         minveljd =     -1,
         maxveljd =     -1,
@@ -54,8 +54,8 @@
           intmin =     -1,
 /
 &INIT_RUN_TIME
-         intspin =      1,
-          intrun =      5,
+         intspin =      5,
+          intrun =      10,
 /
 &INIT_WRITE_TRAJS
       twritetype =      1,
@@ -66,11 +66,11 @@
           intpsi =    120,
 /
 &INIT_SEEDING
-             nff =       1,
-            isec =       4,
+             nff =       2,
+            isec =       3,
             idir =       0,
             nqua =       1,
-       partquant =      50,
+       partquant =       9,
         ntracmax = 2000000,
     loneparticle =       0,
         seedtype =       2,

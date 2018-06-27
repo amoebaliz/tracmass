@@ -58,9 +58,9 @@ CONTAINS
          write (partstamp, '(A,i6.6)') '_p', max(ints-intstart,0)+1
       end if
       
-    fullWritePref =  trim(outDataDir)  // trim(outDataFile) //    &
-                     trim(inargstr1)   // trim(inargstr2)   //    & 
-                     trim(intminstamp) // trim(partstamp)   //    &
+    fullWritePref =  trim(outDataDir)  // trim(outDataFile) //    &  
+                     trim(inargstr1)   // trim(inargstr2)   //    &  
+                     trim(intminstamp) // trim(partstamp)   //    &  
                      trim(rankstamp)
 
 #if defined textwrite

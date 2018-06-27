@@ -1,5 +1,5 @@
 SUBROUTINE loop
-!!---------------------------------------------------------------------------  
+!!---------------------------------------------------------------------------
 !!
 !!       SUBROUTINE loop:
 !!
@@ -43,24 +43,25 @@ SUBROUTINE loop
   REAL                                       :: temp2, salt2, dens2
   ! === Error Evaluation ===
   INTEGER                                    :: errCode
-  INTEGER                                    :: landError=0, boundError=0
+  INTEGER                                    :: landError=0 ,boundError=0
   REAL                                       :: zz
-  
+
   call print_start_loop
-  
+
   dstep = 1.d0 / dble(iter)
   dtmin = dstep * tseas
-  !==========================================================
-  !===   Read in end positions from a previous run        === 
-  !==========================================================
 
+  !==========================================================
+  !===   Read in end positions from a previous run        ===
+  !==========================================================
+  
 #ifdef rerun
  I=0 ; j=0 ; k=0 ; l=0
- !print *,'rerun with initial points from ', & 
-!      trim(outDataDir)//trim(outDataFile)//'_rerun.asc'
-! open(67,file=trim(outDataDir)//trim(outDataFile)//'_rerun.asc')
+ print *,'rerun with initial points from ', & 
+      trim(outDataDir)//trim(outDataFile)//'_rerun.asc'
+ open(67,file=trim(outDataDir)//trim(outDataFile)//'_rerun.asc')
 40 continue
- read(67,566,end=41,err=41) ntrac,niter,x1,y1,z1,tt,t0,subvol,temp,salt,dens
+ read(67,566,end=41,err=41) ntrac,niter,rlon,rlat,z1,tt,t0,subvol,temp,salt,dens
 !  print 566, ntrac,niter,x1,y1,z1,tt,t0,subvol,temp,salt,dens
 
 #if defined orca025 || orca1 
@@ -141,7 +142,7 @@ SUBROUTINE loop
   !==========================================================
   !=== read ocean/atmosphere GCM data files               ===
   !==========================================================
-
+  
   call fancyTimer('initialize dataset','start')
   ff=dble(nff)
   ints = intstart
@@ -151,6 +152,8 @@ SUBROUTINE loop
   ntrac = 0
   ntracend = 0
   call fancyTimer('initialize dataset','stop')
+
+  !==========================================================
   !==========================================================
   !=== Start main time loop                               ===
   !==========================================================
@@ -161,7 +164,7 @@ SUBROUTINE loop
      degrade_counter = degrade_counter + 1
      if (degrade_counter > degrade_time) degrade_counter = 0
      call fancyTimer('reading next datafield','stop')
-
+     
      !=======================================================
      !=== write stream functions and "particle tracer"    ===
      !=======================================================
@@ -236,7 +239,7 @@ SUBROUTINE loop
               nrj(5,ntrac) = idint(ts)
               nrj(7,ntrac) = 1
               if (tss == dble(iter) & 
-                 .and. ints == (intstart+intrun)) then  !!LD: ADDED TO GET FINAL PARTICAL LOCATIONS
+                 .and. ints == (intstart+intrun) ) then
                  endrj(1,ntrac) = x1
                  endrj(2,ntrac) = y1
                  endrj(3,ntrac) = z1
@@ -476,11 +479,14 @@ SUBROUTINE loop
         EXIT intsTimeLoop
      END IF
   end do intsTimeLoop
-  endntracLoop: do ntrac=1,ntracend !!! LD:ADD END LOCATION CYCLE
-      x1     =  endrj(1,ntrac)      !!!
-      y1     =  endrj(2,ntrac)      !!!
-      z1     =  endrj(3,ntrac)      !!!
-      call writedata(15)            !!!
+  endntracLoop: do ntrac=1,ntractot        !!! LD: ADD END LOCATION CYCLE
+      if( int(endrj(1,ntrac)).ne.0 .and. & !!! LD: CRITERIA TO OMIT KILLED
+          int(endrj(2,ntrac)).ne.0 ) then  !!!     OR UNTRACKED PARTICLES
+          x1     =  endrj(1,ntrac)         !!!
+          y1     =  endrj(2,ntrac)         !!!
+          z1     =  endrj(3,ntrac)         !!!
+          call writedata(15) 
+      endif           
   end do endntracLoop
   call print_end_loop
   

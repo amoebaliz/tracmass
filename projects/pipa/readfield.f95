@@ -18,7 +18,7 @@ SUBROUTINE readfields
   IMPLICIT none  
   ! ===   ===   ===   ===   ===   ===   ===   ===   ===   ===   ===
   ! = Variables for filename generation 
-  CHARACTER (len=200)                          :: dataprefix
+  CHARACTER (len=200)                          :: dstamp,datauprefix,datavprefix
   CHARACTER (len=200)                          :: fieldFile
  
   ! = Loop variables
@@ -47,15 +47,16 @@ initFieldcond: if(ints.eq.intstart) then
 endif initFieldcond
 
 ! === EXTRACTING GCM FIELDS FOR GIVEN TIME ===
- write(dataprefix(8:15),'(i4i2.2i2.2)') currYear,currMon,currDay
- fieldFile = trim(inDataDir)//'GLORYS_'//trim(dataprefix(8:15))
- uvel = get3DfieldNC(trim(fieldFile)//'_U.nc', 'vozocrtx')
- vvel = get3DfieldNC(trim(fieldFile)//'_V.nc', 'vomecrty')
- print *, fieldFile
-#ifdef tempsalt
- tem(:,:,:,2) = get3DfieldNC(trim(fieldFile)//'T.nc', 'votemper')
- sal(:,:,:,2) = get3DfieldNC(trim(fieldFile)//'S.nc', 'vosaline')
-#endif /*tempsalt*/
+ dstamp      = 'GLORYS_xx_xx_'
+ write(dstamp(8:9),'(i2.2)') currMon
+ write(dstamp(11:12),'(i2.2)') currDay
+ print *, (trim(inDataDir)//trim(dstamp)//'U.nc')
+ uvel = get3DfieldNC(trim(inDataDir)//trim(dstamp)//'U.nc', 'vozocrtx')
+ vvel = get3DfieldNC(trim(inDataDir)//trim(dstamp)//'V.nc', 'vomecrty')
+!#ifdef tempsalt
+! tem(:,:,:,2) = get3DfieldNC(trim(fieldFile)//'T.nc', 'votemper')
+! sal(:,:,:,2) = get3DfieldNC(trim(fieldFile)//'S.nc', 'vosaline')
+!#endif /*tempsalt*/
 
 ! Remove missing value place holders
 where (uvel > 1000)

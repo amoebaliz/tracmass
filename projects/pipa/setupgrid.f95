@@ -52,7 +52,7 @@ SUBROUTINE setupgrid
 
   ncTpos = 1
   ! === Open mesh file ===
-  gridFile = trim(inDataDir)//'GL2V1_mesh_mask_new.nc'
+  gridFile = trim(inDataDir)//'GL2V1_mesh_mask_new_sub.nc'
 
   ! === Read dx and dy for T points ===
   e1t  = get2DfieldNC(gridFile, 'e1t')

@@ -11,7 +11,7 @@ import pandas
 
 #ROMS_grid = 'PIPA'
 kk = 50
-#isec = 3
+isec = 3
 idir = 0
 itim = 1
 sfname = 'test.seed'
