@@ -139,7 +139,7 @@ if make_dict:
    # ONE-TIME CREATION OF DICTIONARY CONTAINING SOURCE LOCATIONS
    # SINK SOURCE FILES
    # fil_dir = '/Users/elizabethdrenkard/Documents/Collaborations/MAPHIL/Connectivity_Grid/'
-   fil_dir = ''
+   fil_dir = '/Users/liz/TOOLS/tracmass/projects/maphil/'
    fil_nms = ['camotes_vertices_sites_results.txt', \
               'camotes_nearby_sites_results.txt',   \
               'cuatro_islas_results.txt',           \
