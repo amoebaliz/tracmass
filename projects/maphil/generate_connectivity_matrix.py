@@ -105,11 +105,9 @@ def connect_parts(part_mat):
     connect_inds = np.ones(pos_mat_1d.shape)*len(src_sink_dict) 
     nth_src = 0
     for src_reg in src_sink_dict:
-        print src_reg
         bool_mask = np.isin(pos_mat_1d,src_sink_dict[src_reg])
         connect_inds[bool_mask] = nth_src*np.ones(pos_mat_1d.shape)[bool_mask] 
         nth_src+=1
-        print sum(np.isin(pos_mat_1d,src_sink_dict[src_reg]))
     # initialize binning matrix to be nsource regions + 1 "other
     bin_mat = np.zeros((len(src_sink_dict)+1,len(src_sink_dict)+1))
     for npt in range(npart):
@@ -143,9 +141,6 @@ grdfil = '/Volumes/P4/workdir/liz/MODELS/MAPHIL/Inputs/GRID/MaPhil_grd_high_res_
 mask = nc.Dataset(grdfil).variables['mask_rho'][:].squeeze()
 h = nc.Dataset(grdfil).variables['h'][:].squeeze()
 water_only_ind = np.where(mask.ravel())[0]
-plt.pcolor(mask)
-plt.plot(11566/mask.shape[1],11566%mask.shape[1],'ro')
-plt.show()    
 # Source dictionary
 dict_filname = 'Camotes_Sea_Source_Dictionary.npy'
 make_dict = 1
@@ -174,7 +169,7 @@ else:
 #### EDIT PLD (DAYS FROM RELEASE)
 #
 
-pld = 15
+pld = 8
 
 ##############
 
@@ -214,11 +209,11 @@ for year in range(2010,2014+1):
             # calculate particle connectivity
             start_time = time.time()
             con_mat  = connect_parts(part_mat)
-            print 'Time to analyze 1 tracmass bin:',(time.time()-start_time)
+            #print 'Time to analyze 1 tracmass bin:',(time.time()-start_time)
             #plt.pcolor(con_mat); plt.colorbar()
             #plt.show()
             # record output in netCDF file
             update_ncfil(nt,year,mon,day+1,con_mat)
-            print 'SLEEP'
-            time.sleep(5.5)
+            #print 'SLEEP'
+            #time.sleep(5.5)
             nt+=1
