@@ -247,7 +247,7 @@ CONTAINS
     ttpart = anint((anint(tt,8)/tseas-floor(anint(tt,8)/tseas))*tseas)/tseas 
     !currJDtot = (ints+ttpart)*(dble(ngcm)/24.) !! LD: included startMin and startSec; irrelevant if both are 0
     currJDtot = (ints+ttpart)*(dble(ngcm)/24.) + startMin/(60*24.) + startSec/(60*60*24.)
-
+    
     !call  gdate (baseJD+currJDtot-1+jdoffset + leapoffset,  &    !! LD (Jun-1): removed -1 from gdate
     !             currYear , currMon ,currDay)
 
@@ -255,11 +255,15 @@ CONTAINS
                  currYear , currMon ,currDay)
 
     currJDyr = baseJD + currJDtot - jdate(currYear ,1 ,1) + jdoffset
-    
-    if ((mod(currYear, 4) == 0)  .and. (currJDyr>56) .and.     &
-         (currJDyr<(56 - leapoffset + ngcm/24.)) .and. noleap) then
+
+    ! LD NOTE: currJDyr sets "current julian day" where base is 0
+    ! Below, day 58 = Feb 28; so add additional day if at Feb 29
+    ! but want "no leap" criteria
+
+    if ((mod(currYear, 4) == 0)  .and. (currJDyr>58) .and.     &     !! LD: updated from currJDyr > 56 to > 58
+       (currJDyr<(59 - leapoffset + ngcm/24.)) .and. noleap) then    !! LD: updated from currJDyr<(56.. to <(59
        leapoffset = leapoffset + 1
-       call  gdate (baseJD+currJDtot-1+jdoffset + leapoffset,  &
+       call  gdate (baseJD+currJDtot+jdoffset + leapoffset,  &
             currYear , currMon ,currDay)
     end if
     
@@ -270,7 +274,7 @@ CONTAINS
     CurrMin  = int(currFrac,8)
     currSec  = int((currFrac - dble(currMin)) * 60,8)
 
-!! LD: Modified below section because didn't printout sensible date values 
+    !! LD: Modified below section because didn't printout sensible date values 
     if (ints > (maxvelints-1)) then
         if (minvelints == 0) then
           loopints = ints - intmax * int(real(ints-intstart)/intmax)
@@ -284,10 +288,21 @@ CONTAINS
        loopints = ints
     end if
 
-    !loopJD = (loopints + ttpart)*(dble(ngcm)/24) + 1 ! LD: added startMin and startSec
-    loopJD = (loopints + ttpart)*(dble(ngcm)/24) + 1 + startHour/(24.) + startMin/(60*24.) + startSec/(60*60*24.)
+    !loopJD = (loopints + ttpart)*(dble(ngcm)/24) + 1 ! LD: added startMin, startSec and int() around ttpart
+    loopJD = (loopints + int(ttpart))*(dble(ngcm)/24) + 1 + startHour/(24.) + startMin/(60*24.) + startSec/(60*60*24.)
 
-    call  gdate (baseJD+loopJD-1+jdoffset ,loopYear, loopMon, loopDay)
+    call  gdate (baseJD+loopJD-1+jdoffset + leapoffset, &  !! LD: added 'leapoffset'
+          loopYear, loopMon, loopDay)
+
+    ! LD: including leap year criteria for loop date
+    loopJDyr = baseJD+loopJD - jdate(loopYear ,1 ,1)
+ 
+   if ((mod(loopYear, 4) == 0)  .and. (loopJDyr>60) .and.     &     !! LD: updated from currJDyr > 56 to > 58
+       (loopJDyr<(61 - leapoffset + ngcm/24.)) .and. noleap) then   !! LD: updated from currJDyr<(56.. to <(59
+       call  gdate (baseJD+loopJD-1+jdoffset + leapoffset,   &
+                    loopYear, loopMon, loopDay)
+    end if
+    ! END LD addition
     loopJDyr = baseJD+loopJD - jdate(loopYear ,1 ,1)
     loopFrac = (loopJD - dble(int(loopJD,8))) * 24
     loopHour = int(loopFrac,8)

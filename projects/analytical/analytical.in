@@ -46,7 +46,7 @@ $INIT_NAMELIST_VERSION
 &INIT_GRID_TIME
   fieldsPerFile = 2,
   ngcm          = 24,    
-  iter          = 12, 
+  iter          = 24, 
   intmax        = 146000,
   minvelJD      = -1,
   maxvelJD      = -1
@@ -54,16 +54,17 @@ $INIT_NAMELIST_VERSION
 
 &INIT_START_DATE
   startHour     = 12,
-  startDay      = 31,
-  startMon      = 12,
-  startYear     = 2009,
+  startDay      = 1,
+  startMon      = 1,
+  startYear     = 2010,
   startJd       = 0,
-  intmin        = -1
+  intmin        = -1,
+  noleap        = false,
 /
 
 &INIT_RUN_TIME
-  intspin = 2,  
-  intrun  = 9,
+  intspin = 1,  
+  intrun  = 8,
 /
 
 &INIT_WRITE_TRAJS
@@ -71,7 +72,7 @@ $INIT_NAMELIST_VERSION
   kriva           = 1,
   outDataDir      = '/Users/elizabethdrenkard/external_data/analytical_tracmass/'
   outDataFile     = 'test_analytical',
-  intminInOutFile = 1,
+  intminInOutFile = 0,
            intpsi = 120,
 /
 
@@ -80,7 +81,7 @@ $INIT_NAMELIST_VERSION
   isec          = 3,
   idir          = 0,
   nqua          = 1, 
-  partQuant     = 16,
+  partQuant     = 4,
   ntracmax      = 10000000,
   loneparticle  = -1,
   SeedType      = 1,

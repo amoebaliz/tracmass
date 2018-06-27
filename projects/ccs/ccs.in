@@ -47,15 +47,16 @@
         startsec =      0,
         startmin =      0,
        starthour =     12,
-        startday =      1,
-        startmon =      7,
-       startyear =      5,
+        startday =     28,
+        startmon =      2,
+       startyear =      4,
          startjd =     -1,
           intmin =     -1,
+          noleap =   true,
 /
 &INIT_RUN_TIME
-         intspin =      5,
-          intrun =      10,
+         intspin =      1,
+          intrun =      5,
 /
 &INIT_WRITE_TRAJS
       twritetype =      1,
@@ -66,11 +67,11 @@
           intpsi =    120,
 /
 &INIT_SEEDING
-             nff =       2,
+             nff =       1,
             isec =       3,
             idir =       0,
             nqua =       1,
-       partquant =       9,
+       partquant =       1,
         ntracmax = 2000000,
     loneparticle =       0,
         seedtype =       2,

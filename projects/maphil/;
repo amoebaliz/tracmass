@@ -1,0 +1,200 @@
+import time
+import numpy as np
+import netCDF4 as nc
+import pytraj
+import pandas
+
+def insertIntoDataStruct(name,val,aDict):
+    if not name in aDict:
+        aDict[name] = [(val)]
+    else:
+        aDict[name].append((val))
+
+def create_source_dictionary():
+    for nfil in fil_nms:
+        txt_fil = fil_dir + nfil 
+
+        with open(txt_fil) as file:
+             next(file)
+             if ((nfil == 'cuatro_islas_results.txt') or (nfil == 'camotes_islands_results.txt')):
+                vals = np.array([(nfil.replace('_results.txt',''),int(line.split()[0])-1) for line in file])     
+             else:
+                vals = np.array([(str(line.split()[0]),int(line.split()[1])-1) for line in file])
+  
+        for nst in range(vals.shape[0]):   
+             insertIntoDataStruct(vals[nst,0], int(vals[nst,1]), src_sink_dict)
+
+def make_ncfil(filname,dict_vals):
+    fid = nc.Dataset(filename,'w')
+ 
+    fid.close()
+        
+def read_binary_trcmass_output(yr,mon,day):
+    # update directory
+    outdatadir = '/Volumes/P4/workdir/liz/MAPHIL_tracmass/maphil/'
+    date_dir   = str(yr) + str(mon).zfill(2) + str(day).zfill(2) + '-1300/'
+    file_name  = 'test_maphil_run.bin'
+
+    bin_fil    = outdatadir + date_dir + file_name
+    
+    data1 = pandas.DataFrame(tr.readfile(bin_fil))
+
+    #Adjust columns in the dataframes
+    data1 = data1.loc[:,['ntrac','ints','x','y']]
+ 
+    #Change to numpy array
+    data2 = pandas.DataFrame.as_matrix(data1)
+
+    return data2
+
+def connect_parts(part_mat):
+    # initialize binning matrix to be nsource regions + 1 "other
+    bin_mat = np.zeros(len(src_sink_dict)+1,len(src_sink_dict)+1)
+
+    # calculate total number of particles
+    npart = np.max(part_mat[:,0]) 
+
+    # go through each particle
+    for np in range(npart):
+        # locate location records for each particle 
+        i_part = np.where(part_mat[:,0]==np)[0]
+        
+        # get the location at day 1 
+        in_xval = part_mat[i_part[0],2]
+        in_yval = part_mat[i_part[0],3]
+
+        # determine pythonic grid indicies
+        j = np.floor(in_yval)
+        i = np.floor(in_xval)        
+
+        # calculate unraveled matrix index
+        lin_index = j*mask.shape[1]+i
+
+        # assign connectivity matrix row based on day 1 location
+        in_j=0
+         # CYCLE through sorces location lists
+        for nsrc in src_sink_dict:
+            if lin_index in src_sink_dict[nsrc]: 
+               break
+            else:
+               in_j+=1
+        
+        # NOTE: This criteria assumes tracmass recorded 
+        # at daily GCM intervals
+        # "IF there are records up to and including the date of interest" 
+        if len(i_part) > pld: 
+           # get the location at pld-defined time
+           nt_xval = part_mat[i_part[pld],2]
+           nt_yval = part_mat[i_part[pld],3]
+
+           # determine pythonic 2D grid indicies
+           j = np.floor(in_yval)
+           i = np.floor(in_xval)        
+
+           # calculate unraveled matrix index
+           lin_index = j*mask.shape[1]+i
+
+           # CYCLE LOCATION DEFINITIONS 
+           # initialize column value
+           nth_i=0
+           for nsrc in src_sink_dict:
+               # assign column based on day 1+pld position
+               if lout_index in src_sink_dict[nsrc]:
+                  break
+               else:
+                  # try next region criteria. 
+                  # if none of these - defaults to "other"
+                  nth_i+=1
+        else:
+           # particle exited domain or was killed
+           # destination recorded as "other"
+           nth_i=-1
+
+        # add one particle to the proper grid value in the connectivity matrix
+        bin_mat[in_j,nth_i]=+1
+
+    # divide all row members (source region) by row sum
+    con_mat = bin_mat/ np.sum(bin_mat,axis=0)
+
+    return con_mat
+
+def update_ncfil(n,yr,mon,day,con_mat):
+    # create release date string
+    datestr = str(yr) + '-' + str(mon).zfill(2) + '-' + str(day).zfill(2)
+
+    # open netCDF file for editing
+    fid = nc.Dataset(connect_ncfil,a)
+    # edit time variable
+    fid.variables[time_var][n] =  datestr
+    # edit connectivity variable
+    fid.variables[connect_var][n,:] = con_mat 
+    # close netCDF file - this way saves after each track date 
+    fid.close()
+
+##########################################################################
+
+dict_filname = 'Camotes_Sea_Source_Dictionary.npy'
+make_dict = 1
+
+if make_dict:
+   # ONE-TIME CREATION OF DICTIONARY CONTAINING SOURCE LOCATIONS
+   # SINK SOURCE FILES
+   fil_dir = '/Users/elizabethdrenkard/Documents/Collaborations/MAPHIL/Connectivity_Grid/'
+   fil_nms = ['camotes_vertices_sites_results.txt', \
+              'camotes_nearby_sites_results.txt',   \
+              'cuatro_islas_results.txt',           \
+              'camotes_islands_results.txt']
+ 
+   # INITIALIZE source/sink dictionary
+   src_sink_dict = {}
+
+   # POPULATE source/sink dictionary
+   create_source_dictionary()
+
+   #SAVE Camotes sea dictionary to load to Proteus
+   np.save(dict_filname, src_sink_dict)
+
+else:
+   # load the dictionary
+   src_sink_dict = np.load(dict_filname).item()
+
+#### EDIT PLD (DAYS FROM RELEASE)
+#
+
+pld = 15
+
+#
+###############
+    
+# CREATE output netCDF file
+ncfil = 'Camptes_Sea_Connectivity_Matrices.' + str(pld).zfill(2) + '_day_PLD.nc'
+make_ncfil(ncfil,src_sink_dict):
+
+
+
+#print 'SLEEPING'
+#time.sleep(5.5)
+
+# READ BINARY TRACMASS OUTPUT
+trmrn = 'maphil'
+#(CASENAME, PROJECTNAME) :: Initiates pytraj
+tr = pytraj.Trm(trmrn,trmrn)
+grdfil     = '/Users/elizabethdrenkard/external_data/analytical_tracmass/test_grd.nc'
+
+#initiallize time index
+nt = 0
+
+# loop over release dates
+for year in range(2010,2014+1):
+    # leap year criteria
+ 
+    for mon in [1,2,3,4,5,10,11,12]:
+
+        for day in ndays[mon-1]:
+            # read the data
+            part_mat = read_binary_trcmass_output(year,mon,day) 
+            # calculate particle connectivity
+            con_mat  = connect_parts(part_mat)   
+            # record output in netCDF file
+            update_ncfil(nt,year,mon,day,con_mat)
+            nt+=1
