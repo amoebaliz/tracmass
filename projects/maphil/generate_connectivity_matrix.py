@@ -19,11 +19,11 @@ def create_source_dictionary():
 
         with open(txt_fil) as file:
              next(file)
-             if ((nfil == 'cuatro_islas_results.txt') or (nfil == 'camotes_islands_results.txt')):
+             if (nfil == 'camotes_islands_results.txt'):
                 vals = np.array([(nfil.replace('_results.txt',''),int(line.split()[0])-1) for line in file])     
              else:
-                vals = np.array([(str(line.split()[0]),int(line.split()[1])-1) for line in file])
-  
+                vals = np.array([(str(line.split()[0]),water_only_ind[int(line.split()[1])-1]) for line in file])
+                     
         for nst in range(vals.shape[0]):   
              insertIntoDataStruct(vals[nst,0], int(vals[nst,1]), src_sink_dict)
 
@@ -34,18 +34,21 @@ def make_ncfil(src_sink_dict):
     fid.title = tit_str
     # dimensions
     fid.createDimension('time', None)
+    fid.createDimension('time_len', 10)
     fid.createDimension('source', n_src+1)
+    fid.createDimension('src_len', 17)
     fid.createDimension('sink',   n_src+1)
 
     # variables    
-    fid.createVariable('date_string','c',('time',))
+    fid.createVariable('date_string',str,('time','time_len',))
     fid.variables['date_string'].long_name = 'YYYY-MM-DD'
 
-    fid.createVariable('source_region','c',('source',))
+    fid.createVariable('source_region',str,('source','src_len',))
     fid.variables['source_region'].long_name = 'name of source/ sink regions'
     for ns in range(n_src):
-        fid.variables['source_region'][ns] = src_sink_dict.keys()[ns]
-    fid.variables['source_region'][n_src] = 'other' 
+        #print ns, src_sink_dict.keys()[ns]
+        fid.variables['source_region'][ns] = nc.stringtochar(np.array(src_sink_dict.keys()[ns],'S17'))
+    fid.variables['source_region'][n_src] = nc.stringtochar(np.array('other','S17')) 
  
     fid.createVariable('connectivity_fraction','f8',('time','source','sink',)) 
     fid.variables['connectivity_fraction'].long_name = 'fraction of source particles that make it to sink locations'
@@ -100,21 +103,20 @@ def connect_parts(part_mat):
     del part_mat 
     # indices for connectivity matrix set default index to "other"
     connect_inds = np.ones(pos_mat_1d.shape)*len(src_sink_dict) 
-    
     nth_src = 0
     for src_reg in src_sink_dict:
-
+        print src_reg
         bool_mask = np.isin(pos_mat_1d,src_sink_dict[src_reg])
         connect_inds[bool_mask] = nth_src*np.ones(pos_mat_1d.shape)[bool_mask] 
         nth_src+=1
-    
+        print sum(np.isin(pos_mat_1d,src_sink_dict[src_reg]))
     # initialize binning matrix to be nsource regions + 1 "other
     bin_mat = np.zeros((len(src_sink_dict)+1,len(src_sink_dict)+1))
     for npt in range(npart):
         bin_mat[connect_inds[npt,0].astype(int),connect_inds[npt,1].astype(int)]+=1 
-
-    con_mat = bin_mat/ np.sum(bin_mat,axis=0)
-
+    # sum all row values (should equal total released particles from given site)
+    # divide by sum of row to get percent
+    con_mat = bin_mat/ np.expand_dims(np.sum(bin_mat,axis=1),axis=0).T
     return con_mat
 
 def update_ncfil(n,yr,mon,day,con_mat):
@@ -124,7 +126,7 @@ def update_ncfil(n,yr,mon,day,con_mat):
     # open netCDF file for editing
     fid = nc.Dataset(ncfil,'a')
     # edit time variable
-    fid.variables['date_string'][n] =  datestr
+    fid.variables['date_string'][n] = nc.stringtochar(np.array(datestr, 'S10'))
     # edit connectivity variable
     fid.variables['connectivity_fraction'][n,:] = con_mat 
     # close netCDF file - this way saves after each track date 
@@ -132,17 +134,28 @@ def update_ncfil(n,yr,mon,day,con_mat):
 
 ##########################################################################
 
+# TRACMASS IDs
+trmrn = 'maphil'
+#(CASENAME, PROJECTNAME) :: Initiates pytraj
+tr = pytraj.Trm(trmrn,trmrn)
+#grdfil = '/Users/elizabethdrenkard/Documents/Collaborations/MAPHIL/MaPhil_grd_high_res_bathy_mixedJerlov.nc'
+grdfil = '/Volumes/P4/workdir/liz/MODELS/MAPHIL/Inputs/GRID/MaPhil_grd_high_res_bathy_mixedJerlov.nc'
+mask = nc.Dataset(grdfil).variables['mask_rho'][:].squeeze()
+h = nc.Dataset(grdfil).variables['h'][:].squeeze()
+water_only_ind = np.where(mask.ravel())[0]
+plt.pcolor(mask)
+plt.plot(11566/mask.shape[1],11566%mask.shape[1],'ro')
+plt.show()    
+# Source dictionary
 dict_filname = 'Camotes_Sea_Source_Dictionary.npy'
 make_dict = 1
 
 if make_dict:
    # ONE-TIME CREATION OF DICTIONARY CONTAINING SOURCE LOCATIONS
    # SINK SOURCE FILES
-   # fil_dir = '/Users/elizabethdrenkard/Documents/Collaborations/MAPHIL/Connectivity_Grid/'
+   #fil_dir = '/Users/elizabethdrenkard/Documents/Collaborations/MAPHIL/Connectivity_Grid/'
    fil_dir = '/Users/liz/TOOLS/tracmass/projects/maphil/'
-   fil_nms = ['camotes_vertices_sites_results.txt', \
-              'camotes_nearby_sites_results.txt',   \
-              'cuatro_islas_results.txt',           \
+   fil_nms = ['camotes_vertices_sites_results_water_only.txt', \
               'camotes_islands_results.txt']
  
    # INITIALIZE source/sink dictionary
@@ -163,23 +176,16 @@ else:
 
 pld = 15
 
-#
-###############
+##############
+
+#outdatadir = '/Users/elizabethdrenkard/external_data/maphil_tracmass/'
+outdatadir = '/Volumes/P4/workdir/liz/MAPHIL_tracmass/maphil/'
     
 # CREATE output netCDF file
 ncfil = 'Camptes_Sea_Connectivity_Matrices_' + str(pld).zfill(2) + '_day_PLD.nc'
 make_ncfil(src_sink_dict)
 
-# READ BINARY TRACMASS OUTPUT
-trmrn = 'maphil'
-#(CASENAME, PROJECTNAME) :: Initiates pytraj
-tr = pytraj.Trm(trmrn,trmrn)
-#grdfil = '/Users/elizabethdrenkard/Documents/Collaborations/MAPHIL/MaPhil_grd_high_res_bathy_mixedJerlov.nc'
-grdfil = '/Volumes/P4/workdir/liz/MODELS/MAPHIL/Inputs/GRID/MaPhil_grd_high_res_bathy_mixedJerlov.nc'
-mask = nc.Dataset(grdfil).variables['mask_rho'][:].squeeze()
-#outdatadir = '/Users/elizabethdrenkard/external_data/maphil_tracmass/'
-outdatadir = '/Volumes/P4/workdir/liz/MAPHIL_tracmass/maphil/'
-
+# ITTERATE OVER SPECIFIED MONTHS
 all_mons = [1,2,3,4,5,10,11,12]
 ndays = [31,28,31,30,31,30,31,31,30,31,30,31]
 #initiallize time index
@@ -212,7 +218,7 @@ for year in range(2010,2014+1):
             #plt.pcolor(con_mat); plt.colorbar()
             #plt.show()
             # record output in netCDF file
-            update_ncfil(nt,year,mon,day,con_mat)
+            update_ncfil(nt,year,mon,day+1,con_mat)
             print 'SLEEP'
             time.sleep(5.5)
             nt+=1
