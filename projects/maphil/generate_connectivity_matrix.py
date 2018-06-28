@@ -21,6 +21,8 @@ def create_source_dictionary():
              next(file)
              if (nfil == 'camotes_islands_results.txt'):
                 vals = np.array([(nfil.replace('_results.txt',''),int(line.split()[0])-1) for line in file])     
+             elif (nfil == 'tamakin_dacot_vertex_ROMS.txt'):
+                vals = np.array([(str(line.split()[0]),seed_only_ind[int(line.split()[1])-1]) for line in file])
              else:
                 vals = np.array([(str(line.split()[0]),water_only_ind[int(line.split()[1])-1]) for line in file])
                      
@@ -105,9 +107,11 @@ def connect_parts(part_mat):
     connect_inds = np.ones(pos_mat_1d.shape)*len(src_sink_dict) 
     nth_src = 0
     for src_reg in src_sink_dict:
+        print nth_src, src_reg
         bool_mask = np.isin(pos_mat_1d,src_sink_dict[src_reg])
         connect_inds[bool_mask] = nth_src*np.ones(pos_mat_1d.shape)[bool_mask] 
         nth_src+=1
+        print sum(bool_mask)
     # initialize binning matrix to be nsource regions + 1 "other
     bin_mat = np.zeros((len(src_sink_dict)+1,len(src_sink_dict)+1))
     for npt in range(npart):
@@ -141,6 +145,21 @@ grdfil = '/Volumes/P4/workdir/liz/MODELS/MAPHIL/Inputs/GRID/MaPhil_grd_high_res_
 mask = nc.Dataset(grdfil).variables['mask_rho'][:].squeeze()
 h = nc.Dataset(grdfil).variables['h'][:].squeeze()
 water_only_ind = np.where(mask.ravel())[0]
+
+# GENERATE mask for seeded-only points
+seed_mask = np.zeros(h.shape,dtype=bool)
+# MASK for coastal points and <10m depth
+for jj in range(2,mask.shape[0]-1):
+    for ii in range(2,mask.shape[1]-1):
+        # IF POINT IS WATER
+        if mask[jj,ii] == 1:
+           coast = mask[jj-1,ii] + mask[jj+1,ii] + mask[jj,ii-1] + mask[jj,ii+1]
+           # IF POINT TOUCHES COAST or IS LESS THAN 10m in DEPTH
+           if  ((coast < 4) or (h[jj,ii]<10)) :
+               seed_mask[jj,ii] = 1
+# SEEDED_INDICES
+seed_only_ind = np.where(seed_mask.ravel())[0] 
+
 # Source dictionary
 dict_filname = 'Camotes_Sea_Source_Dictionary.npy'
 make_dict = 1
@@ -151,6 +170,7 @@ if make_dict:
    #fil_dir = '/Users/elizabethdrenkard/Documents/Collaborations/MAPHIL/Connectivity_Grid/'
    fil_dir = '/Users/liz/TOOLS/tracmass/projects/maphil/'
    fil_nms = ['camotes_vertices_sites_results_water_only.txt', \
+              'tamakin_dacot_vertex_ROMS.txt',                 \
               'camotes_islands_results.txt']
  
    # INITIALIZE source/sink dictionary
@@ -177,7 +197,7 @@ pld = 8
 outdatadir = '/Volumes/P4/workdir/liz/MAPHIL_tracmass/maphil/'
     
 # CREATE output netCDF file
-ncfil = 'Camptes_Sea_Connectivity_Matrices_' + str(pld).zfill(2) + '_day_PLD.nc'
+ncfil = 'Camotes_Sea_Connectivity_Matrices_' + str(pld).zfill(2) + '_day_PLD.nc'
 make_ncfil(src_sink_dict)
 
 # ITTERATE OVER SPECIFIED MONTHS
