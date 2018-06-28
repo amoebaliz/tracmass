@@ -18,13 +18,14 @@ def create_source_dictionary():
         txt_fil = fil_dir + nfil 
 
         with open(txt_fil) as file:
-             next(file)
-             if (nfil == 'camotes_islands_results.txt'):
-                vals = np.array([(nfil.replace('_results.txt',''),int(line.split()[0])-1) for line in file])     
-             elif (nfil == 'tamakin_dacot_vertex_ROMS.txt'):
-                vals = np.array([(str(line.split()[0]),seed_only_ind[int(line.split()[1])-1]) for line in file])
-             else:
-                vals = np.array([(str(line.split()[0]),water_only_ind[int(line.split()[1])-1]) for line in file])
+             if (nfil == 'tamakin_dacot_vertex_ROMS.txt'):
+                vals = np.array([(nfil.replace('_vertex_ROMS.txt',''),seed_only_ind[int(line.split()[0])-1]) for line in file])
+             else:       
+                next(file)
+                if (nfil == 'camotes_islands_results.txt'):
+                   vals = np.array([(nfil.replace('_results.txt',''),int(line.split()[0])-1) for line in file])     
+                else:
+                   vals = np.array([(str(line.split()[0]),water_only_ind[int(line.split()[1])-1]) for line in file])
                      
         for nst in range(vals.shape[0]):   
              insertIntoDataStruct(vals[nst,0], int(vals[nst,1]), src_sink_dict)
@@ -107,11 +108,9 @@ def connect_parts(part_mat):
     connect_inds = np.ones(pos_mat_1d.shape)*len(src_sink_dict) 
     nth_src = 0
     for src_reg in src_sink_dict:
-        print nth_src, src_reg
         bool_mask = np.isin(pos_mat_1d,src_sink_dict[src_reg])
         connect_inds[bool_mask] = nth_src*np.ones(pos_mat_1d.shape)[bool_mask] 
         nth_src+=1
-        print sum(bool_mask)
     # initialize binning matrix to be nsource regions + 1 "other
     bin_mat = np.zeros((len(src_sink_dict)+1,len(src_sink_dict)+1))
     for npt in range(npart):
@@ -189,7 +188,7 @@ else:
 #### EDIT PLD (DAYS FROM RELEASE)
 #
 
-pld = 8
+pld = 15
 
 ##############
 
