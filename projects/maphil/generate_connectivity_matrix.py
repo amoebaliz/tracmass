@@ -26,7 +26,8 @@ def create_source_dictionary():
                    vals = np.array([(nfil.replace('_results.txt',''),int(line.split()[0])-1) for line in file])     
                 else:
                    vals = np.array([(str(line.split()[0]),water_only_ind[int(line.split()[1])-1]) for line in file])
-                     
+             print vals
+        
         for nst in range(vals.shape[0]):   
              insertIntoDataStruct(vals[nst,0], int(vals[nst,1]), src_sink_dict)
 
@@ -177,7 +178,8 @@ if make_dict:
 
    # POPULATE source/sink dictionary
    create_source_dictionary()
-
+   print 'SLEEP'
+   time.sleep(5.5)
    #SAVE Camotes sea dictionary to load to Proteus
    np.save(dict_filname, src_sink_dict)
 
