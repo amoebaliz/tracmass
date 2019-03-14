@@ -109,6 +109,11 @@ def connect_parts(part_mat):
     nth_src = 0
     for src_reg in src_sink_dict:
         bool_mask = np.isin(pos_mat_1d,src_sink_dict[src_reg])
+
+        print pos_mat_1d
+        print 'SLEEP'
+        time.sleep(5.5)
+
         connect_inds[bool_mask] = nth_src*np.ones(pos_mat_1d.shape)[bool_mask] 
         nth_src+=1
     # initialize binning matrix to be nsource regions + 1 "other

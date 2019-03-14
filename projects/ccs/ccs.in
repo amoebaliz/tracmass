@@ -56,7 +56,7 @@
 /
 &INIT_RUN_TIME
          intspin =      1,
-          intrun =      5,
+          intrun =      20,
 /
 &INIT_WRITE_TRAJS
       twritetype =      1,
@@ -71,7 +71,7 @@
             isec =       3,
             idir =       0,
             nqua =       1,
-       partquant =       1,
+       partquant =      20,
         ntracmax = 2000000,
     loneparticle =       0,
         seedtype =       2,
