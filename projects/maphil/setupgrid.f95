@@ -48,7 +48,7 @@ SUBROUTINE setupgrid
   map2d    = [3, 4, 1, 2]
   map3d    = [2, 3, 4, 1]
 
-  gridfile =  "/Volumes/P4/workdir/liz/MODELS/MAPHIL/Inputs/GRID/MaPhil_grd_high_res_bathy_mixedJerlov.nc"
+  gridfile =  "/Volumes/P1/ROMS-Inputs/MaPhil/Grid/MaPhil_grd_high_res_bathy_mixedJerlov.nc"
   ncTpos = 1
   print *, trim(gridfile)
   dxv(:,:) = 1./get2DfieldNC(trim(gridfile), 'pm')

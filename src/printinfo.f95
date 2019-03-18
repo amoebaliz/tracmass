@@ -181,7 +181,7 @@ CONTAINS
     REAL, dimension(2)                         :: wallarray 
     REAL                                       :: walltime, walltot
     INTEGER                                    :: wallmin, wallsec
- 
+
 #ifdef sediment
     print 599,ints,ntime,ntractot,nout,nloop,nerror,ntractot-nout, & 
          nsed,nsusp,nexit
@@ -200,8 +200,8 @@ CONTAINS
     !call dtime(wallarray, walltime)
     wallmin = int(walltime/60)
     wallsec = walltime - wallmin*60
-
     call updateClock
+
     if (loneparticle>0) then
        print 798 ,ints-intstart ,trj(1,loneparticle) ,trj(2,loneparticle), &
             trj(3,loneparticle), nrj(6,loneparticle), wallmin, wallsec, loopYear, &

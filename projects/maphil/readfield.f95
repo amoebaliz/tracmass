@@ -61,18 +61,17 @@ SUBROUTINE readfields
 
   call updateclock
   call datasetswap
-
+ 
   ! === update the time counting ===
   intpart1    = mod(ints,24)
   intpart2    = floor((ints)/24.)
-  dstamp      = 'xxxx/MaPhil-LD.HCo07T_avg_xxxx-xx-xxT13:00:00.nc'
-
+  dstamp      = 'xxxx/MaPhil-LD.HCo07T_avg_xxxx-xx-xxTxx:00:00.nc'
+  
   write (dstamp(1:4),'(i4.4)')   currYear
   write (dstamp(27:30),'(i4i2)') currYear
   write(dstamp(32:33),'(i2.2)')  currMon
   write(dstamp(35:36),'(i2.2)')  currDay
-!  write(dstamp(35:36),'(i2.2)')  currHour
-!  write(dstamp(38:39),'(i2.2)')  currMin
+  write(dstamp(38:39),'(i2.2)')  currHour
 
   dataprefix  = trim(inDataDir) // dstamp
   tpos        = intpart1+1
@@ -104,6 +103,7 @@ SUBROUTINE readfields
   end do
 #endif
 
+  !print *, trim(dataprefix)
   Cs_w = get1DfieldNC (trim(dataprefix), 'Cs_w')
   sc_w = get1DfieldNC (trim(dataprefix), 's_w')
   hc   = getScalarNC (trim(dataprefix), 'hc')
@@ -135,18 +135,6 @@ SUBROUTINE readfields
      uflux = -uflux
      vflux = -vflux
   end if
-
-#ifdef tempsalt
-  tem(:,:,:,2)      = get3DfieldNC(trim(dataprefix) ,   'temp')
-  sal(:,:,:,2)      = get3DfieldNC(trim(dataprefix) ,   'salt')
-  !rho(:,:,:,2)      = get3DfieldNC(trim(dataprefix) ,   'rho')
-#ifdef larval_fish
-  srflux(:,:,2)     = get2DfieldNC(trim(dataprefix) ,   'swrad')
-! Note: this works as long as surface AKt is zero.
-  ak2(:,:,:)        = get3DfieldNC(trim(dataprefix) ,   'AKt')
-  akt(:,:,0:km-1,2) = ak2(:,:,:)
-#endif
-#endif
 
   return
 

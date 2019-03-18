@@ -2,8 +2,8 @@
       gridvernum =      6,
 /
 &INIT_GRID_DESCRIPTION
-         gcmname = 'GLORYS',
-       gcmsource = 'http://www.mercator-ocean.fr/eng/science/GLORYS',
+         gcmname = 'ROMS',
+       gcmsource = 'http://www.atmos.ucla.edu/cesr/ROMS_page.html',
         gridname = 'maphil',
       gridsource = 'RutgersESMGroup',
         griddesc = '0.5 km simulation Camotes Sea, Philippines',
@@ -11,7 +11,7 @@
 /
 &INIT_CASE_DESCRIPTION
         casename = 'maphil',
-        casedesc = 'Tracking particles in the Central Pacific',
+        casedesc = 'Tracking particles in the Camotes Sea',
 /
 &INIT_GRID_SIZE
              imt =     301,
@@ -71,7 +71,7 @@
             idir =       0,
             nqua =       1,
        partquant = <NPART>,
-        ntracmax = 2000000,
+        ntracmax = 5000000,
     loneparticle =       0,
         seedtype =       2,
             ist1 =       0,

@@ -246,12 +246,14 @@ CONTAINS
     IMPLICIT NONE
     ttpart = anint((anint(tt,8)/tseas-floor(anint(tt,8)/tseas))*tseas)/tseas 
     !currJDtot = (ints+ttpart)*(dble(ngcm)/24.) !! LD: included startMin and startSec; irrelevant if both are 0
-    currJDtot = (ints+ttpart)*(dble(ngcm)/24.) + startMin/(60*24.) + startSec/(60*60*24.)
-    
+    currJDtot = (ints+ttpart)*(dble(ngcm)/24.) + startHour/(24.) + startMin/(60*24.) + startSec/(60*60*24.)
     !call  gdate (baseJD+currJDtot-1+jdoffset + leapoffset,  &    !! LD (Jun-1): removed -1 from gdate
     !             currYear , currMon ,currDay)
 
-    call  gdate (baseJD+currJDtot+jdoffset + leapoffset,  &
+    !call  gdate (baseJD+currJDtot+jdoffset + leapoffset,  &      !! LD (Mar-18-2019): returned -1 to gdate
+    !             currYear , currMon ,currDay)                    !!    with hrs, puts one date ahead
+
+    call  gdate (baseJD+currJDtot-1+jdoffset + leapoffset,  & 
                  currYear , currMon ,currDay)
 
     currJDyr = baseJD + currJDtot - jdate(currYear ,1 ,1) + jdoffset
@@ -289,8 +291,10 @@ CONTAINS
     end if
 
     !loopJD = (loopints + ttpart)*(dble(ngcm)/24) + 1 ! LD: added startMin, startSec and int() around ttpart
-    loopJD = (loopints + int(ttpart))*(dble(ngcm)/24) + 1 + startHour/(24.) + startMin/(60*24.) + startSec/(60*60*24.)
-
+    !loopJD = (loopints + int(ttpart))*(dble(ngcm)/24) + 1 + startHour/(24.) + startMin/(60*24.) + startSec/(60*60*24.)
+    ! LD (MAR-18-2019): removed +1 from loopJD calculation
+    loopJD = (loopints + int(ttpart))*(dble(ngcm)/24) +  startHour/(24.) + startMin/(60*24.) + startSec/(60*60*24.)     
+ 
     call  gdate (baseJD+loopJD-1+jdoffset + leapoffset, &  !! LD: added 'leapoffset'
           loopYear, loopMon, loopDay)
 

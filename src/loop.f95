@@ -164,7 +164,7 @@ SUBROUTINE loop
      degrade_counter = degrade_counter + 1
      if (degrade_counter > degrade_time) degrade_counter = 0
      call fancyTimer('reading next datafield','stop')
-     
+ 
      !=======================================================
      !=== write stream functions and "particle tracer"    ===
      !=======================================================
@@ -172,6 +172,7 @@ SUBROUTINE loop
       call write_streamfunctions
       call writetracer
      endif
+
      intspinCond: if(ints*nff <= (intstart+intspin)*nff) then 
         call fancyTimer('seeding','start')
         call seed (tt,ts)
@@ -772,13 +773,13 @@ return
                  print *, thickline !========================================
                  print *,'Warning: not find any path for unknown reason '
                  print *, " "
-                 write (*,'(A, E9.3, A, E9.3)'), ' uflux= ', &
+                 write (*,'(A, E9.3, A, E9.3)') ' uflux= ', &
                       uflux(ia,ja,ka,nsm),'  vflux= ', vflux(ia,ja,ka,nsm)
                  call print_ds
                  print *,'---------------------------------------------------'
                  print *,"   ntrac = ",ntrac
                  call print_pos
-                 write (*,'(A7, I10, A7, I10, A7, I10)'), & 
+                 write (*,'(A7, I10, A7, I10, A7, I10)') & 
                       ' k_inv= ', KM+1-kmt(ia,ja), ' kmt= ', kmt(ia,ja), &
                       'lnd= ', mask(ia,ja)
                  print *, thinline !-----------------------------------------

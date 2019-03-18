@@ -3,13 +3,12 @@
 
 import struct
 import numpy as np
-import pyroms
+import netCDF4 as nc
 import csv
 import matplotlib.pylab as plt
 import pandas
 #-----------------------------
 
-ROMS_grid = 'MaPhil'
 kk = 50
 isec = 3
 idir = 0
@@ -18,9 +17,11 @@ sfname = 'test.seed'
 
 #-----------------------------
 # Get Mask
-GRID = pyroms.grid.get_ROMS_grid(ROMS_grid)
-mask_rho = GRID.hgrid.mask_rho
-h = GRID.vgrid.h
+grd_fil='/Volumes/P1/ROMS-Inputs/MaPhil/Grid/MaPhil_grd_high_res_bathy_mixedJerlov.nc'
+fid = nc.Dataset(grd_fil)
+mask_rho = fid.variables['mask_rho'][:]
+h = fid.variables['h'][:]
+
 # Create csv file
 with open(sfname, 'w') as f:
         writer = csv.writer(f, delimiter=' ', lineterminator='\n')

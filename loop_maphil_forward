@@ -8,7 +8,7 @@
 infil=/Users/liz/TOOLS/tracmass/projects/maphil/forward_template.in
 tempfil=$infil.tmp
 outfil=/Users/liz/TOOLS/tracmass/projects/maphil/maphil.in
-yr=2012
+yr=2010
 nmdays=(31 28 31 30 31 30 31 31 30 31 30 31)
 
 intrun=30
@@ -17,7 +17,7 @@ isec=4
 partquant=100
 
 
-while (($yr <= 2014)); do
+while (($yr <= 2016)); do
       echo $yr
       if (($yr == 2010)); then
          mon=10;
