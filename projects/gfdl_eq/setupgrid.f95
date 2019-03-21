@@ -54,6 +54,6 @@ SUBROUTINE setupgrid
   dxdy = dyu*dxv
   depth = get2DfieldNC(trim(gridfile), 'deptho')
   mask = get2DfieldNC(trim(gridfile), 'wet')
-  kmt = 50 
+  kmt = 1 
 
 end SUBROUTINE setupgrid

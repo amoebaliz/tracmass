@@ -15,7 +15,7 @@
 /
 &INIT_GRID_SIZE
              imt =    199,
-             jmt =     81,
+             jmt =     80,
               km =      1,
              nst =      2,
          subgrid =      0,

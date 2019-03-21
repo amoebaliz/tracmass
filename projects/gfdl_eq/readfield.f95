@@ -67,7 +67,7 @@ SUBROUTINE readfields
 
   dstampu     = 'test_u.nc'
   dstampv     = 'test_v.nc'
-  dstampssh   = 'test_ssh.nc'
+! dstampssh   = 'test_ssh.nc'
 
 ! write(dstamp(1:4),'(i4.4)')    currYear
 ! write(dstamp(24:27),'(i4.4)')  currYear
@@ -77,10 +77,11 @@ SUBROUTINE readfields
 ! write(dstamp(38:39),'(i2.2)')  currMin
 !  print *, dstamp
 ! dataprefix  = trim(inDataDir) // dstamp
+
   tpos        = intpart1+1
   uvel        = get3DfieldNC(trim(trim(inDataDir) // dstampu) ,   'ssu')
   vvel        = get3DfieldNC(trim(trim(inDataDir) // dstampv) ,   'ssv')
-  ssh         = get2dfieldNC(trim(trim(inDataDir) // dstampssh) , 'zos')
+! ssh         = get2dfieldNC(trim(trim(inDataDir) // dstampssh) , 'zos')
 
 #ifdef explicit_w
   wvel      = get3DfieldNC(trim(dataprefix) ,'omega')
@@ -98,40 +99,12 @@ SUBROUTINE readfields
 
   hs(:,:,1) = ssh
 
-#ifdef explicit_w
-  wflux(:,:,:,2) = 0.
-  do j=1,jmt
-    do i=1,imt
-      wflux(i,j,0:km-1,2) = wvel(i,j,1:km)*dxdy(i,j)
-    end do
-  end do
-#endif
-
-  Cs_w = get1DfieldNC (trim(dataprefix), 'Cs_w')
-  sc_w = get1DfieldNC (trim(dataprefix), 's_w')
-  hc   = getScalarNC (trim(dataprefix), 'hc')
+  print *, 'MEEEEEP'
 
   do k=1,km
-     dzt0 = (hc*sc_w(k) + depth*Cs_w(k)) / (hc + depth)
-     z_w(:,:,k) = ssh + (ssh + depth) * dzt0
- end do
-
-  dzt(:,:,1:km-1,2) = z_w(:,:,2:km) - z_w(:,:,1:km-1)
-  dzt(:,:,km,2) = ssh - z_w(:,:,km)
-  dzt(:,:,:,1)=dzt(:,:,:,2)
-
-  ! NOTE: not filling last i and j positions of dzu and dzv, respectively... so = 0
-  !       ergo, you do NOT want to be calculating particle trajectory with:
-  !       1) uflux from points (imt,:) 
-  !       2) vflux from points (:,jmt)
-  ! SOLUTION: make kill zone for northern and eastern boundary 2 points wide in vip.in
-
-  dzu(1:imt-1,:,:) = dzt(1:imt-1,:,:,2)*0.5 + dzt(2:imt,:,:,2)*0.5
-  dzv(:,1:jmt-1,:) = dzt(:,1:jmt-1,:,2)*0.5 + dzt(:,2:jmt,:,2)*0.5
-  
-  do k=1,km
-     uflux(:,:,k,2)   = uvel(:,:,k) * dzu(:,:,k) * dyu(:imt,:jmt)
-     vflux(:,:,k,2)   = vvel(:,:,k) * dzv(:,:,k) * dxv(:imt,:jmt)
+     uflux(:,:,k,2)   = uvel(:,:,k) * 1 * dyu(:imt,:jmt)
+     vflux(:,:,k,2)   = vvel(:,:,k) * 1 * dxv(:imt,:jmt)
+     dzt = 1
   end do
 
   if (nff .le. 0) then

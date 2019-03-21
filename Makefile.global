@@ -106,5 +106,6 @@ $(OBJDIR):
 .PHONY : clean
 clean :
 	-rm -rf $(OBJDIR)
+	-rm *.mod
 	-rm $(RUNFILE)
-
+         
