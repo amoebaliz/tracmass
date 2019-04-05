@@ -37,6 +37,11 @@ ifeq ($(NETCDFLIBS),"macports")
 	INC_DIR          = -I/opt/local/include/
 	LNK_FLAGS        = -lnetcdf -lnetcdff
 endif
+ifeq ($(NETCDFLIBS),"gfdl")
+	LIB_DIR          = -L/usr/local/x64/netcdf-4.2_optimized/lib
+	INC_DIR          = -I/usr/local/x64/netcdf-4.2_optimized/include
+	LNK_FLAGS        = -lnetcdf -lnetcdff
+endif
 ifeq ($(NETCDFLIBS),"fink")
 	LIB_DIR          = -L/sw/lib # -L/sw/lib/netcdf-gfortran/lib
 	INC_DIR          = -I/sw/include  #-I/sw/lib/netcdf-gfortran/include
@@ -64,12 +69,13 @@ endif
 
 ifeq ($(F95COMPILER),"ifort")
 	FF_FLAGS         = -O3 -c -cpp -convert big_endian
-	F90_FLAGS        = -free -assume nounderscore
+        F90_FLAGS        = -free 
+#	F90_FLAGS        = -free -assume nounderscore
 	ARG_FLAGS       += -Tf
-	FF              += $(LIB_DIR) $(INC_DIR) $(F90_FLAGS) $(ORM_FLAGS)
+	FF              += $(LIB_DIR) $(INC_DIR) $(F90_FLAGS) $(ORM_FLAGS) 
 endif
 
-
+ 
 CC                = gcc -O  $(INC_DIR)
 
 ACTVEL = empty.o
@@ -92,16 +98,14 @@ runfile : $(objects)
 $(OBJDIR)/%.o : %.f95
 	$(FF) $(FF_FLAGS) $(ORM_FLAGS) $(PROJECT_FLAG) $(CASE_FLAG) $(ARG_FLAGS)  $< -o $@
 
-
-
 $(objects) : | $(OBJDIR)
 
 $(OBJDIR):
 	mkdir -p $(OBJDIR)
 
-
 .PHONY : clean
 clean :
 	-rm -rf $(OBJDIR)
+	-rm *.mod
 	-rm $(RUNFILE)
-
+         
