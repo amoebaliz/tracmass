@@ -80,8 +80,13 @@ SUBROUTINE readfields
   ssh         = get2dfieldNC(trim(dataprefix) ,'zeta')
 
 #ifdef explicit_w
-  wvel      = get3DfieldNC(trim(dataprefix) ,'omega')
+  wvel      = get3DfieldNC(trim(dataprefix) , 'omega')
+
+  where (wvel > 1000)
+     wvel = 0
+  end where
 #endif
+
   where (uvel > 1000)
      uvel = 0
   end where
@@ -117,7 +122,7 @@ SUBROUTINE readfields
   dzt(:,:,km,2) = ssh - z_w(:,:,km)
   dzt(:,:,:,1)=dzt(:,:,:,2)
 
- ! NOTE: not filling last i and j positions of dzu and dzv, respectively... so = 0
+  ! NOTE: not filling last i and j positions of dzu and dzv, respectively... so = 0
   !       ergo, you do NOT want to be calculating particle trajectory with:
   !       1) uflux from points (imt,:) 
   !       2) vflux from points (:,jmt)
@@ -134,6 +139,8 @@ SUBROUTINE readfields
   if (nff .le. 0) then
      uflux = -uflux
      vflux = -vflux
+  ! LD: adding zflux condition
+     wflux = -wflux
   end if
 
   return

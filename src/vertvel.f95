@@ -31,7 +31,8 @@ subroutine vertvel(ia,iam,ja,ka)
 #if defined zgrid3D
      do n=n1,n2
         ! time change of the mass the in grid box
-        wflux(k,n) = wflux(k-1,n) - ff * &
+
+                wflux(k,n) = wflux(k-1,n) - ff * & 
              (  uflux(ia,ja,k,n) - uflux(iam, ja,   k, n)   & 
               + vflux(ia,ja,k,n) - vflux(ia,  ja-1, k, n)   & 
 #if defined ifs

@@ -14,10 +14,10 @@ nmdays=(31 28 31 30 31 30 31 31 30 31 30 31)
 intrun=30
 nff=1
 isec=4
-partquant=100
+partquant=1000
 
 
-while (($yr <= 2016)); do
+while (($yr <= 2011)); do
       echo $yr
       if (($yr == 2010)); then
          mon=10;

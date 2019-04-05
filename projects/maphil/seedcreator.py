@@ -13,7 +13,7 @@ kk = 50
 isec = 3
 idir = 0
 itim = 1
-sfname = 'test.seed'
+sfname = 'maphil_surf.seed'
 
 #-----------------------------
 # Get Mask
