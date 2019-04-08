@@ -716,10 +716,10 @@ return
            if( z1.le.dble(KM-kmt(ib,jb)) ) then
               print *,'Particle below bottom',z1,dble(KM-kmt(ib,jb))
               print *,'x1,y1',x1,y1
-              print *,'ntrac=',ntrac,niter 
+              print *,'ntrac=',ntrac,niter
               nerror=nerror+1
- !             nrj(6,ntrac)=1
-              stop 3957
+              nrj(6,ntrac)=1 !LD: =1 deactivates the particle 
+              ! stop 3957      !LD: uncommented above and commented out 'stop'
               z1=dble(KM-kmt(ib,jb))+0.5d0
               errCode = -49
            end if
