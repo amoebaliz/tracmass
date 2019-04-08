@@ -35,8 +35,6 @@ SUBROUTINE readfields
 
   ! = Input fields from GCM
   REAL,       ALLOCATABLE, DIMENSION(:,:)    :: ssh,dzt0
-  !REAL,       ALLOCATABLE, DIMENSION(:,:)    :: ssh
-  !REAL,       ALLOCATABLE, DIMENSION(:,:,:)  :: dzt0
   ! ===   ===   ===
 
   alloCondUVW: if(.not. allocated (ssh)) then
@@ -112,7 +110,7 @@ SUBROUTINE readfields
   do k=1,km
      dzt0 = (hc*sc_w(k) + depth*Cs_w(k)) / (hc + depth)
      z_w(:,:,k) = ssh + (ssh + depth) * dzt0
- end do
+  end do
 
   dzt(:,:,1:km-1,2) = z_w(:,:,2:km) - z_w(:,:,1:km-1)
   dzt(:,:,km,2) = ssh - z_w(:,:,km)

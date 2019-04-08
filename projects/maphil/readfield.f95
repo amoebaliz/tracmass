@@ -139,8 +139,6 @@ SUBROUTINE readfields
   if (nff .le. 0) then
      uflux = -uflux
      vflux = -vflux
-  ! LD: adding zflux condition
-     wflux = -wflux
   end if
 
   return

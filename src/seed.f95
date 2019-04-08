@@ -159,9 +159,11 @@ CONTAINS
          IF (nqua == 3 .OR. isec > 4) THEN
 #if defined zgrid3D
             vol = dzt(ib,jb,kb,1)
+            print *, 'MEEEEEEEEEP1', vol
 #else
             vol = dz(kb)
 #endif /*zgrid*/
+            print *, 'MEEEEEEEEEP2', vol
 !#ifdef varbottombox
 !            IF (kb == KM+1-kmt(ib,jb)) THEN
 !               vol = dztb (ib,jb,1)
