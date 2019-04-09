@@ -16,10 +16,10 @@ SUBROUTINE readfields
   ! ===   ===   ===   ===   ===   ===   ===   ===   ===   ===   ===
   ! = Variables for filename generation 
   CHARACTER                                  :: dates(62)*17
-  CHARACTER (len=200)                        :: dataprefix ,dstampu ,dstampv ,dstampssh
+  CHARACTER (len=200)                        :: dataprefix ,dstamp
   INTEGER                                    :: intpart1 ,intpart2
   INTEGER                                    :: ndates
-  INTEGER                                    :: yr1 ,mn1 ,dy1,hr
+  INTEGER                                    :: yr1 ,mn1 ,dy1, hr
   INTEGER                                    :: yr2 ,mn2 ,dy2
   
   ! = Loop variables
@@ -35,8 +35,7 @@ SUBROUTINE readfields
 
   ! = Input fields from GCM
   REAL,       ALLOCATABLE, DIMENSION(:,:)    :: ssh,dzt0
-  !REAL,       ALLOCATABLE, DIMENSION(:,:)    :: ssh
-  !REAL,       ALLOCATABLE, DIMENSION(:,:,:)  :: dzt0
+  
   ! ===   ===   ===
 
   alloCondUVW: if(.not. allocated (ssh)) then
@@ -65,23 +64,18 @@ SUBROUTINE readfields
   intpart1    = mod(ints,24)
   intpart2    = floor((ints)/24.)
 
-  dstampu     = 'test_u.nc'
-  dstampv     = 'test_v.nc'
-! dstampssh   = 'test_ssh.nc'
+  dstamp      = CM4_his_daily_xxxx-xx-xx.nc
 
-! write(dstamp(1:4),'(i4.4)')    currYear
-! write(dstamp(24:27),'(i4.4)')  currYear
-! write(dstamp(29:30),'(i2.2)')  currMon
-! write(dstamp(32:33),'(i2.2)')  currDay
-! write(dstamp(35:36),'(i2.2)')  currHour
-! write(dstamp(38:39),'(i2.2)')  currMin
-!  print *, dstamp
-! dataprefix  = trim(inDataDir) // dstamp
+  write(dstamp(15:19),'(i4.4)')  currYear
+  write(dstamp(21:22),'(i2.2)')  currMon
+  write(dstamp(24:25),'(i2.2)')  currDay
+
+  dataprefix  = trim(inDataDir) // dstamp
 
   tpos        = intpart1+1
-  uvel        = get3DfieldNC(trim(trim(inDataDir) // dstampu) ,   'ssu')
-  vvel        = get3DfieldNC(trim(trim(inDataDir) // dstampv) ,   'ssv')
-! ssh         = get2dfieldNC(trim(trim(inDataDir) // dstampssh) , 'zos')
+  uvel        = get3DfieldNC(trim(dataprefix) , 'ssu')
+  vvel        = get3DfieldNC(trim(dataprefix) , 'ssv')
+  ssh         = get2dfieldNC(trim(dataprefix) , 'zos')
 
 #ifdef explicit_w
   wvel      = get3DfieldNC(trim(dataprefix) ,'omega')
