@@ -7,7 +7,7 @@
         gridname = 'gfdl_eq',
       gridsource = 'GFDL',
         griddesc = '1/10 deg GCM',
-       indatadir = '/nbhome/Liz.Drenkard/tracmass_stuff/',
+       indatadir = '/work/Liz.Drenkard/eq_pac/',
 /
 &INIT_CASE_DESCRIPTION
         casename = 'gfdl_eq',
