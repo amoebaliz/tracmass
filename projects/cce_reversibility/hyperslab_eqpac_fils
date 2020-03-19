@@ -1,0 +1,63 @@
+#!/bin/bash
+
+# Large File Location: nbhome
+in_dir=/nbhome/Liz.Drenkard/tracmass_stuff
+
+# Final File Location: work directory
+out_dir=/work/Liz.Drenkard/eq_pac
+
+# Model title information
+model_title=CM4_his_daily
+
+# Date information
+nmdays=(31 28 31 30 31 30 31 31 30 31 30 31) 
+
+# INITIALIZE CLOCK
+YEAR=2010
+mn=1
+dy=1
+nd=0 # DAY NUMBER FOR NCO
+
+# SET END YEAR
+FYEAR=2014
+
+while ((YEAR<=FYEAR)); do
+
+      while ((mn<=12)); do
+    
+            MON=$(printf %02d $mn)
+
+            while ((dy<=nmdays[mn-1])); do
+
+                  DAY=$(printf %02d $dy)  
+                  echo ${YEAR}-${MON}-${DAY}
+
+                  # HYPERSLAB VARIABLES
+                  ncks -O -d time,$nd $in_dir/test_ssh.nc $out_dir/${YEAR}_${MON}_${DAY}_ssh.nc 
+                  ncks -O -d time,$nd $in_dir/test_sst.nc $out_dir/${YEAR}_${MON}_${DAY}_sst.nc
+                  ncks -O -d time,$nd $in_dir/test_ssu.nc $out_dir/${YEAR}_${MON}_${DAY}_ssu.nc
+                  ncks -O -d time,$nd $in_dir/test_ssv.nc $out_dir/${YEAR}_${MON}_${DAY}_ssv.nc
+
+                  # COMBINE FIELDS INTO SINGLE FILE
+                  cp $out_dir/${YEAR}_${MON}_${DAY}_ssh.nc $out_dir/${model_title}_${YEAR}-${MON}-${DAY}.nc
+                  ncks -A $out_dir/${YEAR}_${MON}_${DAY}_sst.nc $out_dir/${model_title}_${YEAR}-${MON}-${DAY}.nc
+                  ncks -A $out_dir/${YEAR}_${MON}_${DAY}_ssu.nc $out_dir/${model_title}_${YEAR}-${MON}-${DAY}.nc
+                  ncks -A $out_dir/${YEAR}_${MON}_${DAY}_ssv.nc $out_dir/${model_title}_${YEAR}-${MON}-${DAY}.nc
+
+                  # REMOVE SINGLE-VARIABLE FILES
+                  rm $out_dir/${YEAR}_${MON}_${DAY}_*.nc
+
+                  ((nd++))
+                  ((dy++))
+            done
+            # RESET MONTH
+            dy=1
+            ((mn++))
+
+      done
+      # RESET YEAR
+      mn=1
+      ((YEAR++))
+done
+
+

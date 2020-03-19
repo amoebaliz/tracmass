@@ -1,0 +1,127 @@
+&INIT_NAMELIST_VERSION
+      gridvernum =      6,
+/
+&INIT_GRID_DESCRIPTION
+         gcmname = 'GFDL_CM4',
+       gcmsource = 'http://www.atmos.ucla.edu/cesr/ROMS_page.html',
+        gridname = 'gfdl_eq',
+      gridsource = 'GFDL',
+        griddesc = '1/10 deg GCM',
+       indatadir = '/work/Liz.Drenkard/eq_pac/',
+/
+&INIT_CASE_DESCRIPTION
+        casename = 'gfdl_eq',
+        casedesc = 'Looking at larval dispersal in lagrangian space',
+/
+&INIT_GRID_SIZE
+             imt =    199,
+             jmt =     80,
+              km =      1,
+             nst =      2,
+         subgrid =      0,
+     subgridimin =       ,
+     subgridimax =       ,
+     subgridjmin =       ,
+     subgridjmax =       ,
+     subgridfile =     '',
+       subgridid =       ,
+/
+&INIT_BASE_TIME
+         basesec =      0,
+         basemin =      0,
+        basehour =      0,
+         baseday =      1,
+         basemon =      1,
+        baseyear =      1,
+        jdoffset =      0,
+/
+&INIT_GRID_TIME
+   fieldsperfile =      2,
+            ngcm =     24,
+            iter =      1,
+          intmax = 146000,
+        minveljd =     -1,
+        maxveljd =     -1,
+/
+&INIT_START_DATE
+        startsec =      0,
+        startmin =      0,
+       starthour =     12,
+        startday =     28,
+        startmon =      2,
+       startyear =      4,
+         startjd =     -1,
+          intmin =     -1,
+          noleap =   true,
+/
+&INIT_RUN_TIME
+         intspin =      1,
+          intrun =      20,
+/
+&INIT_WRITE_TRAJS
+      twritetype =      1,
+           kriva =      1,
+      outdatadir = '/nbhome/Liz.Drenkard/tracmass_stuff/tracmass_out/',
+     outdatafile = 'testGFDL',
+ intmininoutfile =      0,
+          intpsi =    120,
+/
+&INIT_SEEDING
+             nff =       1,
+            isec =       3,
+            idir =       0,
+            nqua =       1,
+       partquant =      20,
+        ntracmax = 2000000,
+    loneparticle =       0,
+        seedtype =       1,
+            ist1 =      50,
+            ist2 =      50,
+            jst1 =      20,
+            jst2 =      20,
+            kst1 =       1,
+            kst2 =       1,
+            tst1 =        ,
+            tst2 =        ,
+         seeddir = '/home/Liz.Drenkard/TOOLS/tracmass/projects/gfdl_eq/',
+        seedfile = 'test.seed',
+     varseedfile =      0,
+        seedtime =      0,
+         seedall =      0,
+         seedpos =      1,
+       seedparts =      0,
+     seedpart_id =      0,
+/
+&INIT_KILLZONES
+            nend =    4,
+            ienw  =   1,   1, 377,   1,
+            iene  =   1, 378, 378, 378,
+            jens  =   1, 871,   1,   1,
+            jenn  = 872, 872, 872,   1,
+            timax = 356000.0
+/
+&INIT_TEMP_SALT
+           tmin0 =  -50.0,
+           tmax0 =  400.0,
+           smin0 = -500.0,
+           smax0 =  400.0,
+           rmin0 = -100.0,
+           rmax0 =  500.0,
+           tmine =  -50.0,
+           tmaxe =  400.0,
+           smine = -150.0,
+           smaxe =  500.0,
+           rmine = -100.0,
+           rmaxe =  500.0,
+/
+&INIT_DIFFUSION
+              ah = 2000.0,
+              av =    0.0,
+/
+&INIT_SEDIMENT
+        partdiam =  0.001,
+            rhos = 2620.0,
+           cwamp =   20.0,
+           twave =    8.0,
+         critvel =    0.1,
+/
