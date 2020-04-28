@@ -46,11 +46,12 @@ SUBROUTINE setupgrid
   map2d    = [3, 4, 1, 2]
   map3d    = [2, 3, 4, 1]
  
-  gridfile = "/nbhome/Liz.Drenkard/tracmass_stuff/test_grd.nc"
+  !gridfile = "/nbhome/Liz.Drenkard/tracmass_stuff/test_grd.nc"
+  gridfile = "/nbhome/jgj/projects/collaborations/CMIP6/ebus/annual/GFDL-ESM4_1pctCO2-cdr_D1_ocean_annual_z.static.nc"
   ncTpos = 1
   print *, trim(gridfile)
-  dxv = get2DfieldNC(trim(gridfile), 'dxt')
-  dyu = get2DfieldNC(trim(gridfile), 'dyt')  
+  dxv = get2DfieldNC(trim(gridfile), 'dxCv')
+  dyu = get2DfieldNC(trim(gridfile), 'dyCu')  
   dxdy = dyu*dxv
   depth = get2DfieldNC(trim(gridfile), 'deptho')
   mask = get2DfieldNC(trim(gridfile), 'wet')

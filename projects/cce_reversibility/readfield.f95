@@ -64,7 +64,7 @@ SUBROUTINE readfields
   intpart1    = mod(ints,24)
   intpart2    = floor((ints)/24.)
 
-  dstamp      = CM4_his_daily_xxxx-xx-xx.nc
+  dstamp      = 'CM4_his_daily_xxxx-xx-xx.nc'
 
   write(dstamp(15:19),'(i4.4)')  currYear
   write(dstamp(21:22),'(i2.2)')  currMon
