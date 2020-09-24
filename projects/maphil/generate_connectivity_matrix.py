@@ -2,7 +2,7 @@ import time
 import calendar
 import numpy as np
 import netCDF4 as nc
-import pytraj
+#import pytraj
 import pandas
 import matplotlib.pyplot as plt
 from collections import OrderedDict
@@ -67,10 +67,17 @@ def read_binary_trcmass_output(yr,mon,day):
 
     bin_fil    = outdatadir + date_dir + file_name
     print bin_fil 
-    data1 = pandas.DataFrame(tr.readfile(bin_fil))
+    # BELOW PULLED FROM PYTRAJ
+    runtraj = np.fromfile(open(bin_fil), \
+                      np.dtype([('ntrac','i4'), ('ints','f8'),('x','f4'), ('y','f4'),('z','f4')]))
+
+    # Use pandas to pull selected columns (.loc) and convert to numpy array (.values)
+    data1 = pandas.DataFrame(runtraj).loc[:,['ntrac','x','y']].values
+
+    #data1 = pandas.DataFrame(tr.readfile(bin_fil))
 
     #Adjust columns in the dataframes
-    data1 = data1.loc[:,['ntrac','ints','x','y']]
+    #data1 = data1.loc[:,['ntrac','ints','x','y']]
  
     #Change to numpy array
     data2 = pandas.DataFrame.as_matrix(data1)
@@ -144,7 +151,7 @@ def update_ncfil(n,yr,mon,day,con_mat):
 # TRACMASS IDs
 trmrn = 'maphil'
 #(CASENAME, PROJECTNAME) :: Initiates pytraj
-tr = pytraj.Trm(trmrn,trmrn)
+#tr = pytraj.Trm(trmrn,trmrn)
 #grdfil = '/Users/elizabethdrenkard/Documents/Collaborations/MAPHIL/MaPhil_grd_high_res_bathy_mixedJerlov.nc'
 grdfil = '/Volumes/P4/workdir/liz/MODELS/MAPHIL/Inputs/GRID/MaPhil_grd_high_res_bathy_mixedJerlov.nc'
 mask = nc.Dataset(grdfil).variables['mask_rho'][:].squeeze()
