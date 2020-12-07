@@ -108,4 +108,7 @@ clean :
 	-rm -rf $(OBJDIR)
 	-rm *.mod
 	-rm $(RUNFILE)
-         
+        
+.PHONY : clean2
+clean2: 
+	-rm *.mod 

@@ -1,0 +1,19 @@
+PROJECT	          = cce_reversibility
+CASE              = cce_reversibility
+RUNFILE 	  = runtrm_$(PROJECT)
+
+#F95COMPILER        = "g95"
+#F95COMPILER        = "gfortran"
+F95COMPILER        = "ifort"
+#FF                 = "/sw/bin/gfortran-fsf-4.9" #Alt. compiler location
+
+#NETCDFLIBS	       = "none"
+#NETCDFLIBS        = "automatic"
+NETCDFLIBS        = "gfdl"
+#NETCDFLIBS        = "fink"
+#NETCDFLIBS        = "source"
+
+#================================================================
+
+include Makefile.global
+
